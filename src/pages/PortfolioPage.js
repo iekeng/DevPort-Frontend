@@ -26,28 +26,29 @@ const PortfolioPage = () => {
     setStep(step - 1);
   };
 
-  const handleSectionChange = (nextSection) => {
-    // Logic for handling section change
-  };
+  // const handleSectionChange = (nextSection) => {
+  //   // Logic for handling section change
+  // };
 
   useEffect(() => {
+    const requestToken = async (code, state) => {
+      let response
+      try {
+        response = await axios.get(`http://localhost:4000/oauth/callback?code=${code}&state=${state}`);
+      } catch (error) {
+        console.error(error);
+      }
+      return response;
+    }
+
     const handleGithubCallback = async () => {
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
-      const code = urlParams.get('code');
-
-      if (code) {
-        try {
-          const response = await axios.get(`http://localhost:4000/callback/${code}`);
-          console.log('response: ', response);
-          if(response.data.token !== undefined) {
-            const accessToken = response.data.token;
-            localStorage.setItem('accessToken', accessToken)
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      }
+      const code = urlParams.get('code')
+      const state = urlParams.get('state')
+      
+      const response = await requestToken(code, state);
+      localStorage.setItem('accessToken', response.data.token)
     };
 
     handleGithubCallback();

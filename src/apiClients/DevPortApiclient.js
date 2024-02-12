@@ -1,21 +1,28 @@
-import { application } from "express";
+import axios from "axios";
 
 class DevPortApiClient{
   
-  constructor(onError){
-    this.onError = onError;
+  constructor(){
+    // this.onError = onError;
     this.base_url = 'http://localhost:4000';
   }
 
+ 
 
   async request(options) {
-    response = await(this.base_url + options.url, {
+    let response;
+    try {
+      response = await axios(this.base_url + options.url, {
       method: options.method,
       body: options.body ? JSON.stringify(options.body) : null,
       headers: {
         'Content-Type': 'application/json'
       },
     })
+    } catch (error){
+      
+    }
+    
   }
 
   async get(url, options){

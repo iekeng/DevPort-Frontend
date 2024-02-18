@@ -9,13 +9,17 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { FaTwitter, FaLinkedin,  } from "react-icons/fa";
 
-const PersonalDetails = ({ onSave }) => {
+const PersonalDetails = ({ step }) => {
 
   const nameRef = useRef()
   const emailRef = useRef()
   const phoneRef = useRef()
-  const xRef = useRef()
+  const twitterRef = useRef()
   const linkedInRef = useRef()
+
+useEffect(() => {
+  console.log('hi there')
+}, [step]);
 
 // const [formData, setFormData] = useState({
 //     name: '',
@@ -118,6 +122,7 @@ const PersonalDetails = ({ onSave }) => {
 
   return (
     <>
+      //Force email to lower case in the form
       <h5>Details</h5>
       <Form className="border border-gray-600 p-4 mb-3">
         <InputField name="name" label="Full Name" placeholder="Last Name, First Name" fieldRef={nameRef} />
@@ -125,15 +130,18 @@ const PersonalDetails = ({ onSave }) => {
         <InputField name="phone" label="Phone" type="text" placeholder="Phone Number" fieldRef={phoneRef} />
         <Row>
           <Col>
-            <InputField name="twitter" label={<FaTwitter size={20}/>} placeholder={"X handle"} fieldRef={xRef} />
+            <InputField name="twitter" label={<FaTwitter size={20}/>} placeholder={"X handle"} fieldRef={twitterRef} />
           </Col>
           <Col>
             <InputField name="linkedin" label={<FaLinkedin size={20}/>} placeholder="LinkedIn URL" fieldRef={linkedInRef} />
           </Col>
         </Row>
       </Form>
-      <h5>Skills</h5>
-      <MultiFields name="skills" />
+      <h5>Soft Skills</h5>
+      <MultiFields name="soft" />
+      <h5>Technical Skills</h5>
+      <MultiFields name="technical" />
+
     </> 
     );
 };

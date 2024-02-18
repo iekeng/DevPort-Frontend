@@ -8,14 +8,14 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 export default function Education({title}) {
-    // const [formData, setFormData] = useState({
-    //     institution: '',
-    //     course: '',
-    //     startDate: '',
-    //     endDate: '',
-    //     location: '',
-    //     userId: userId,
-    // });
+    const [formData, setFormData] = useState([{
+        institution: '',
+        course: '',
+        startDate: '',
+        endDate: '',
+        location: '',
+        user: '',
+    }]);
 
     // const [educationDetails, setEducationDetails] = useState([]); // To store multiple education details
     // const [isAdding, setIsAdding] = useState(false);
@@ -29,7 +29,8 @@ export default function Education({title}) {
 
     // const saveEducationDetails = async (data) => {
     //     try {            
-    //         const userId = localStorage.getItem('userId');
+    //         //get userid from DevPort api client and its api provider
+    //         // const userId = localStorage.getItem('userId');
     //         if (!userId){
     //             console.error('User ID not found in localStorage');
     //             return;
@@ -62,18 +63,18 @@ export default function Education({title}) {
     //         startDate: '',
     //         endDate: '',
     //         location: '',
-    //         userId: userId,
+    //         user: user,
     //     });
-    //     setIsAdding(false);
+    //     // setIsAdding(false);
     // };
 
-    // const handleInputChange = (event) => {
-    //     const { name, value } = event.target;
-    //     setFormData({
-    //         ...formData,
-    //         [name]: value,
-    //     });
-    // };
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
 
     // const addAnotherForm = () => {
     //     setIsAdding(true);
@@ -90,7 +91,7 @@ export default function Education({title}) {
                 {title && <h1>Education Section</h1>}
             </div>
             <Form className="border border-gray-600 p-4 mb-3">
-                <InputField name="institution" label="Institution" placeholder="Institution" fieldRef={institutionRef} />
+                <InputField name="institution" label="Institution" placeholder="Institution" fieldRef={institutionRef}/>
                 <InputField name="degree" label="Degree" placeholder="Degree" fieldRef={degreeRef} />
                 <InputField name="course" label="Course" placeholder="Course" fieldRef={courseRef} />
                 <InputField name="location" label="City" placeholder="City" locationRef={courseRef} />

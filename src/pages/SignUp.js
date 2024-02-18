@@ -9,9 +9,8 @@ const SignUp = () => {
 
 return (
   <>
-  <Header />
   <Container>
-    <div className='mt-5'>
+    <div className='mt-5 flex-grow'>
       <a href="http://localhost:4000/oauth" className="mt-5" style={{ textDecoration: 'none', color: 'inherit' }}>
         <Button variant="dark" className='w-100 mt-5'>
           <FaGithub size={25} /> 
@@ -19,7 +18,6 @@ return (
       </a>
     </div> 
     <div className='text-center fs-6'>Authorize Github</div>
-    <Footer fixed={true} />
   </Container>
   </>
 );

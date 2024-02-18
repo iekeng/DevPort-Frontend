@@ -19,7 +19,6 @@ const LandingPage = () => {
   
   return (
     <>
-      <Header/>
       <Container>
       <div className='fs2 pt-2'>
             <h1>Elevate Your Profile</h1>
@@ -51,7 +50,6 @@ const LandingPage = () => {
         </Row>
       </Container>
       </Container>
-      <Footer />
     </>
   )
 }

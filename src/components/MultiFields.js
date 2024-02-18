@@ -4,14 +4,20 @@ import InputField from './InputField';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { FaPlusSquare, FaPlusSquare as Plus } from 'react-icons/fa';
+import { FaPlusSquare as Plus } from 'react-icons/fa';
 
 
 const MultiFields = ({ name }) => {
-  const [sectionNum, setSectionNum] = useState(1)
-  const [skills, setSkills] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
+  const [formDataArray, setFormDataArray] = useState([{fieldValue: ''}])
   const accessToken = localStorage.getItem('accessToken');
+
+  const handleAddField = () => {
+    setFormDataArray([...formDataArray, {fieldValue:''}])
+  }
+
+  const handleSubmit = () => {
+    //todo
+  }
 
   // useEffect(() => {
   //   if (accessToken) {
@@ -85,9 +91,9 @@ const MultiFields = ({ name }) => {
   //   saveLanguagesToDB();
   // };
 
-  const handleAddSection = () => {
-    setSectionNum(sectionNum + 1);
-  };
+  // const handleAddSection = () => {
+  //   setSectionNum(sectionNum + 1);
+  // };
   
   return (
     // <div>
@@ -134,21 +140,19 @@ const MultiFields = ({ name }) => {
     // </main>
     // </div>
     <>
-    <div className='border mt-2 p-4 mb-4'>
-      {[...Array(sectionNum).keys()].map((_, index) => (
-      <Row>
-        <Col>
-          <InputField name={name} type="text" placeholder=". . ." />
-        </Col>
-        <Col>
-          <InputField name={name}  type="text" placeholder=". . ." />
-        </Col>
-      </Row>
-       ))}
-      <Button onClick={handleAddSection}>
-        <FaPlusSquare size={15} />
-      </Button>
+    <div className="mx-auto mb-2">
+      <div className='d-flex flex-row flex-wrap justify-content-start'>
+        {formDataArray.map((formData, index) => (
+          <div className='m-2' key={index}>
+            <InputField name={name} type="text" placeholder="..." value={formData.formValue}/>
+          </div>
+        ))}
       </div>
+      <div className="d-flex">
+        <Button className="py-1" onClick={handleSubmit}>Save</Button>
+        <Button className="ms-auto p-2" onClick={handleAddField} style={{background: 'none', border: 'none', color: 'black'}}>+ Add field</Button>
+      </div>
+    </div>
     </>
   );
 };

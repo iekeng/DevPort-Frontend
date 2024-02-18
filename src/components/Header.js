@@ -39,7 +39,7 @@ export default function Header({loggedIn}) {
     }
   };
     return (
-        <Navbar bg="light" expand="lg" className='mb-1'>
+        <Navbar bg="light" expand="lg" className='mb-4'>
         <Container>
           <Navbar.Brand href="/">
             <h1>DevPort</h1>

@@ -269,7 +269,7 @@ const Experience = ({ onSave }) => {
     
     <h3>Achievements:</h3>
     <MultiFields name="achievements" />
-    <h3>Responsibilities:</h3>
+    <p className='fs-6'>Responsibilities:</p>
     <MultiFields name="responsibility"/>
   </Form>
 

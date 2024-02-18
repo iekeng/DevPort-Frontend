@@ -1,36 +1,53 @@
 import axios from "axios";
 
-class DevPortApiClient{
+export default class DevPortApiClient{
   
   constructor(){
     // this.onError = onError;
-    this.base_url = 'http://localhost:4000';
+    this.base_url = "http://localhost:4000";
   }
-
- 
 
   async request(options) {
+    let query = new URLSearchParams(options.query || {}).toString()
+    
+    if (query !== ''){
+      query = '?' + query;
+    } 
+
     let response;
+
     try {
-      response = await axios(this.base_url + options.url, {
+      response = await axios({
       method: options.method,
-      body: options.body ? JSON.stringify(options.body) : null,
+      url: this.base_url + options.url + query, 
+      data: options.body ? JSON.stringify(options.body) : null,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
     })
-    } catch (error){
-      
+      return {
+        data: response.data,
+        statusText: response.statusText,
+        code: response.code,
+      }
+    } catch (error) {    
+      return {
+        statusText: "BAD ERR",
+        code: error.code,
+        message: error.message
+      }
     }
-    
   }
 
-  async get(url, options){
-    this.request({method: 'GET', url, ...options })
+  async get(url, query, options){
+    return this.request({method:'GET', url, query, ...options })
   }
 
-  async post(url, options){
-    this.request({method: 'POST', url, body, ...options })
+  async post(url,body,  options){
+    return this.request({method:'POST', url, body, ...options })
   }
 
+  async put(url, body, options){
+    return this.request({method:'PUT', url, body, ...options })
+  }
 }

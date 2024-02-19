@@ -16,7 +16,7 @@ import { useGithubApi } from '../contexts/GithubApiProvider';
 const PortfolioPage = () => {
   const [sectionNum, setSectionNum] = useState(1);
   const [experienceSectionNum, setExperienceSectionNum] = useState(1);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({});
   const api = useApi();
   const githubApi = useGithubApi();
@@ -36,7 +36,8 @@ const PortfolioPage = () => {
       const queryString = window.location.search;
       const response = await api.get('/oauth/callback', queryString);
       localStorage.setItem('accessToken', response.data.token);
-      githubApi.isAuthenticated ? console.log('yay') : console.log('nay');
+      githubApi.isAuthenticated ? console.log(localStorage.getItem('accessToken')) : console.log('nay');
+      handleNext();
     })();
   }, [api]);
 
@@ -49,7 +50,7 @@ const PortfolioPage = () => {
     <>
       { githubApi.isAuthenticated ?
       <>
-        <Container>
+        <Container className="mb-5">
           <ProgressBar className="mb-2" now={now} label={`${Math.trunc(now)}%`}/>
           {step === 1 && 
             <PersonalDetails/>

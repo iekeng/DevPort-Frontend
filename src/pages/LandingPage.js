@@ -19,7 +19,7 @@ const LandingPage = () => {
   
   return (
     <>
-      <Container>
+      <Container className='mb-5'>
       <div className='fs2 pt-2'>
             <h1>Elevate Your Profile</h1>
       </div>
@@ -31,24 +31,7 @@ const LandingPage = () => {
        On successful authentication, you're redirected to the portfolio page where you fill in your details, when you're done,
        click Generate CV on the navigation bar and you'll be presented with a button to download a PDF copy of your newly created portfolio.
        </p>
-      <Link to="/SignUp" ><Button variant="dark" className="w-100">Get Started</Button></Link>
-      <p className='p-2'>Powered by:</p>
-      <Container fluid="md"  className="py-4 text-center mt-4">
-        <Row>
-          <Col>
-            <FaDigitalOcean size={28}/>
-          </Col>
-          <Col>
-            <FaNode size={28}/>
-          </Col>
-          <Col>
-            <FaGoogle size={28}/>
-          </Col>
-          <Col>
-            <FaGithub size={28}/>
-          </Col>
-        </Row>
-      </Container>
+      <Link to="/SignUp" ><Button variant="dark" className="mb-5 w-100">Get Started</Button></Link>
       </Container>
     </>
   )

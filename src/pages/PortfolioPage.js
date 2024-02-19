@@ -47,7 +47,7 @@ const PortfolioPage = () => {
 
   return (
     <>
-      { localStorage.getItem('accessToken') ?
+      { githubApi.isAuthenticated ?
       <>
         <Container>
           <ProgressBar className="mb-2" now={now} label={`${Math.trunc(now)}%`}/>

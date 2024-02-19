@@ -11,9 +11,9 @@ export default class GithubApiClient {
     try{
       response = await axios({
         method: options.method,
-        ur: this.base_url + options.url, 
+        url: this.base_url + options.url, 
         headers: {
-          Authorization: 'Bearer: ' + localStorage.getItem('accessToken'),
+          Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
         },
         ...options.headers,
       })
@@ -32,14 +32,14 @@ export default class GithubApiClient {
   }    
 
   async get(url, options){
-    return this.request({method: 'GET', url, ...options})
-  }
-
-  logout(){
-    localStorage.removeItem('accessToken');
+    return this.request({method:'GET', url, ...options})
   }
 
   isAuthenticated(){
     return localStorage.getItem('accessToken') !== null;
-  }   
+  }  
+
+  logout(){
+    localStorage.removeItem('accessToken');
+  } 
 }

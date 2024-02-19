@@ -9,116 +9,103 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { FaTwitter, FaLinkedin,  } from "react-icons/fa";
 import { useApi } from '../contexts/DevPortApiProvider';
+import { useGithubApi } from '../contexts/GithubApiProvider';
 
-const PersonalDetails = ({ onSubmit }) => {
-
-  const nameRef = useRef()
-  const emailRef = useRef()
-  const phoneRef = useRef()
-  const twitterRef = useRef()
-  const linkedInRef = useRef()
-  const api = useApi
+const PersonalDetails = () => {
+  const api = useApi();
+  const githubApi = useGithubApi();
+  const nameRef = useRef();
+  const emailRef = useRef();
+  const phoneRef = useRef();
+  const twitterRef = useRef();
+  const linkedInRef = useRef();
+  const summRef = useRef();
 
   
 
-// const [formData, setFormData] = useState({
-//     name: '',
-//     email: '',
-//     phone: '',
-//     socials: {
-//         twitter: '',
-//         linkedIn: '',
-//     },
-// });
+const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    summary: '',
+    phone: '',
+    avatar_url: '',
+    location: '',
+    socials: {
+        twitter: '',
+        linkedIn: '',
+        github: '',
+    },
+});
 
-// const [isEditing, setIsEditing] = useState(false);
+const [isEditing, setIsEditing] = useState(false);
 
-// useEffect(() => {
-//     fetchPersonalDetailsFromGitHub();
-// }, []);
+useEffect(() => {
+    fetchPersonalDetailsFromGitHub();
+    // handleSavePersonalDetails();
+}, []);
 
-// const fetchPersonalDetailsFromGitHub = async () => {
-//     // Get access token from localStorage
-//     const accessToken = localStorage.getItem('accessToken');
+const fetchPersonalDetailsFromGitHub = async () => {
+  try {
+      let response;
+      
+      if (githubApi.isAuthenticated) {
+        response = await githubApi.get('/user');
+      }
 
-//     if (accessToken !== null) {
-//     // Use the access_token here
-//     console.log('Access token:', accessToken);
-//     } else {
-//     console.log('Access token not found in localStorage.');
-//     }
+    const userData = response.data;
+        
+    setFormData({
+      name: userData.name,
+      email: userData.email,
+      phone: userData.phone,
+      socials: {
+        twitter: userData.twitter_username,
+        linkedIn: userData.blog,
+        github: userData.html_url,
+      },
+      avatar_url: userData.avatar_url,
+      location: userData.location,
+    });
 
-//     try {
-//         // Fetch personal details from GitHub API
-//         const userUrl = 'https://api.github.com/user';
+    console.log(response)
 
-//         const response = await axios.get(userUrl, {
-//             headers: {
-//                 Authorization: `Bearer ${accessToken}`,
-//             },
-//         });
+  } catch (error) {
+      console.error('Error fetching personal details from GitHub: ', error.message);
+  }
+};
 
-//         if (response.status === 200) {
-//             const userData = response.data;
-            
-//             setFormData({
-//                 name: userData.name,
-//                 email: userData.email,
-//                 phone: userData.phone,
-//                 socials: {
-//                     twitter: userData.twitter_username,
-//                     linkedIn: userData.blog,
-//                 },
-//             });
-//         }
-//     } catch (error) {
-//         console.error('Error fetching personal details from GitHub', error);
-//     }
-// };
+const handleSavePersonalDetails = async () => {
+  let response;
 
-// const handleSavePersonalDetails = () => {
-//     const updatePersonalDetailsApiUrl = 'http://localhost:4000/users';
+  let updatedDetails = {
+    name: formData.name,
+    email: formData.email,
+    phone: formData.phone,
+    socials: {
+      twitter: formData.socials.twitter,
+      linkedIn: formData.socials.linkedIn,
+    },
+  };
 
-//     // Prepare the data to send to the API
-//     const updatedDetails = {
-//         name: formData.name,
-//         email: formData.email,
-//         phone: formData.phone,
-//         socials: {
-//             ...formData.socials,  // Preserve the existing socials using the spread operator
-//             linkedIn: formData.socials.linkedIn,
-//         },
-//     };
+  try{
+    response = await api.post('/users', updatedDetails);
+    console.log(response)
+    const userId = response.data._id.toString();
+    localStorage.setItem('userId', userId);
+    setIsEditing(false);
+   
+  } catch(error){
+    console.error('Error updating personal details', error);
+  }
+};
 
-//     // POST personal details to DB
-//     axios
-//         .post(updatePersonalDetailsApiUrl, updatedDetails)
-//         .then((response) => {
-//             console.log(response);
-//             if (response.status === 201) {
-//                 console.log('Personal details updated successfully');
-//                 // Get userId from userData
-//                 const userId = response.data._id.toString();
-//                 // Save userId to localStorage
-//                 localStorage.setItem('userId', userId);
-//                 console.log('userId:', userId);
-//                 setIsEditing(false); // Turn off editing mode
-//             } else {
-//                 console.error('Failed to update personal details');
-//             } onSave('Education');
-//         })
-//         .catch((error) =>{
-//             console.error('Error updating personal details', error);
-//         });
-// };
+const handleEditClick = () => {
+    setIsEditing(true);
+};
 
-// const handleEditClick = () => {
-//     setIsEditing(true);
-// };
-
-// const handleSaveClick = () => {
-//     handleSavePersonalDetails();
-// };
+const handleSaveClick = () => {
+    handleSavePersonalDetails();
+};
 
   return (
     <>
@@ -126,8 +113,15 @@ const PersonalDetails = ({ onSubmit }) => {
       <h5>Details</h5>
       <Form className="border border-gray-600 p-4 mb-3">
         <InputField name="name" label="Full Name" placeholder="Last Name, First Name" fieldRef={nameRef} />
-        <InputField name="email" label="Email" type="email" placeholder="Email Address" fieldRef={emailRef} />
-        <InputField name="phone" label="Phone" type="text" placeholder="Phone Number" fieldRef={phoneRef} />
+        <InputField name="summary" as="textarea" label="Summary" placeholder="Personal Summary" rows={3} fieldRef={summRef}/>
+        <Row>
+          <Col>
+            <InputField name="email" label="Email" type="email" placeholder="Email Address" fieldRef={emailRef} />
+          </Col>
+          <Col>
+            <InputField name="phone" label="Phone" type="text" placeholder="Phone Number" fieldRef={phoneRef} />
+          </Col>
+        </Row>
         <Row>
           <Col>
             <InputField name="twitter" label={<FaTwitter size={20}/>} placeholder={"X handle"} fieldRef={twitterRef} />

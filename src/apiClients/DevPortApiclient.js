@@ -43,7 +43,7 @@ export default class DevPortApiClient{
     return this.request({method:'GET', url, query, ...options })
   }
 
-  async post(url,body,  options){
+  async post(url, body, options){
     return this.request({method:'POST', url, body, ...options })
   }
 

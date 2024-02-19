@@ -8,18 +8,18 @@ import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { FaTwitter, FaLinkedin,  } from "react-icons/fa";
+import { useApi } from '../contexts/DevPortApiProvider';
 
-const PersonalDetails = ({ step }) => {
+const PersonalDetails = ({ onSubmit }) => {
 
   const nameRef = useRef()
   const emailRef = useRef()
   const phoneRef = useRef()
   const twitterRef = useRef()
   const linkedInRef = useRef()
+  const api = useApi
 
-useEffect(() => {
-  console.log('hi there')
-}, [step]);
+  
 
 // const [formData, setFormData] = useState({
 //     name: '',

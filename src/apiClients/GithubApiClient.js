@@ -1,50 +1,45 @@
 import axios from "axios";
 
-class GithubApiClient {
+export default class GithubApiClient {
 
-  constructor (onError){
-    this.error = onError;
+  constructor (){
     this.base_url = "https://api.github.com";
   }
 
   async request(options) {
     let response;
     try{
-      response = await axios.get(this.base_url + options.url, {
+      response = await axios({
         method: options.method,
+        ur: this.base_url + options.url, 
         headers: {
           Authorization: 'Bearer: ' + localStorage.getItem('accessToken'),
         },
         ...options.headers,
       })
-  } catch (error) {
+      return {
+        data: response.data,
+        statusText: response.statusText,
+        code: response.code,
+      }
+  } catch (error){
     return {
-      ok: false,
-      status: 500,
-      json: async () => { return {
-        code: 500,
-        message: 'Server is unresponsive',
-        description: error.toString(),
-        } }
+      statusText: "BAD ERR",
+      code: error.code,
+      message: error.message
       }
     }
-    return {
-      ok: response.ok,
-      status: response.status,
-      body: response.message ? response.message : response.data,
-      };
-    }    
-
+  }    
 
   async get(url, options){
-    this.request({method: GET, url, ...options})
+    return this.request({method: 'GET', url, ...options})
   }
 
   logout(){
-      localStorage.removeItem('accessToken');
+    localStorage.removeItem('accessToken');
   }
 
-  isAuthenticated() {
-      return localStorage.getItem('accessToken') !== null;
+  isAuthenticated(){
+    return localStorage.getItem('accessToken') !== null;
   }   
 }

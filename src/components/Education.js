@@ -90,11 +90,18 @@ export default function Education({title}) {
             <div className='fs2 pt-2'>
                 {title && <h1>Education Section</h1>}
             </div>
-            <Form className="border border-gray-600 p-4 mb-3">
+            <Form className="border border-gray-600 p-3 mb-3">
                 <InputField name="institution" label="Institution" placeholder="Institution" fieldRef={institutionRef} onChange={handleInputChange}/>
-                <InputField name="degree" label="Degree" placeholder="Degree" fieldRef={degreeRef} onChange={handleInputChange}/>
-                <InputField name="course" label="Course" placeholder="Course" fieldRef={courseRef} onChange={handleInputChange}/>
+                
                 <InputField name="location" label="City" placeholder="City" locationRef={locationRef} onChange={handleInputChange}/>
+                <Row>
+                  <Col>
+                    <InputField name="course" label="Course" placeholder="Course" fieldRef={courseRef} onChange={handleInputChange}/>
+                  </Col>
+                  <Col>
+                    <InputField name="degree" label="Degree" placeholder="Degree" fieldRef={degreeRef} onChange={handleInputChange}/>
+                  </Col>
+                </Row>
                 <Row>
                     <Col>
                         <InputField name="startDate" label="Start Date" placeholder="Start Date" type="date" fieldRef={startDateRef} onChange={handleInputChange}/>

@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import Footer from './Footer';
 import InputField from './InputField';
-import Header from './Header';
 import MultiFields from './MultiFields';
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import ProgressBar from 'react-bootstrap/ProgressBar';
+
 import { FaTwitter, FaLinkedin,  } from "react-icons/fa";
 import { useApi } from '../contexts/DevPortApiProvider';
 import { useGithubApi } from '../contexts/GithubApiProvider';
@@ -23,55 +22,41 @@ const PersonalDetails = () => {
 
   
 
-const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    summary: '',
-    phone: '',
-    avatar_url: '',
-    location: '',
-    socials: {
-        twitter: '',
-        linkedIn: '',
-        github: '',
-    },
-});
+const [formData, setFormData] = useState({});
 
 const [isEditing, setIsEditing] = useState(false);
 
 useEffect(() => {
-    fetchPersonalDetailsFromGitHub();
-    // handleSavePersonalDetails();
+    fetchPersonalDetailsFromGitHub()
+   
+  // handleSavePersonalDetails();
 }, []);
 
-const fetchPersonalDetailsFromGitHub = async () => {
+const fetchPersonalDetailsFromGitHub = async() => {
+  let userData
+  let response;
   try {
-      let response;
-      
       if (githubApi.isAuthenticated) {
         response = await githubApi.get('/user');
       }
-
-    const userData = response.data;
-        
-    setFormData({
-      name: userData.name,
-      email: userData.email,
-      phone: userData.phone,
-      socials: {
-        twitter: userData.twitter_username,
-        linkedIn: userData.blog,
-        github: userData.html_url,
-      },
-      avatar_url: userData.avatar_url,
-      location: userData.location,
-    });
-
-    console.log(response)
-
+      userData = {
+        name: response.data.name,
+        email: response.data.email,
+        phone: response.data.phone,
+        socials: {
+          twitter: `https://twitter.com/${response.data.twitter_username}`,
+          linkedIn: response.data.blog,
+          github: response.data.html_url,
+        },
+        avatar_url: response.data.avatar_url,
+        location: response.data.location,
+      }
   } catch (error) {
-      console.error('Error fetching personal details from GitHub: ', error.message);
+    console.error('Error fetching personal details from GitHub: ', error.message);
   }
+  setFormData(userData)
+  console.group(userData)
+  console.group(formData)
 };
 
 const handleSavePersonalDetails = async () => {
@@ -85,6 +70,8 @@ const handleSavePersonalDetails = async () => {
       twitter: formData.socials.twitter,
       linkedIn: formData.socials.linkedIn,
     },
+    avatar_url: formData.avatar_url,
+    location: formData.location
   };
 
   try{
@@ -112,22 +99,22 @@ const handleSaveClick = () => {
       //Force email to lower case in the form
       <h5>Details</h5>
       <Form className="border border-gray-600 p-4 mb-3">
-        <InputField name="name" label="Full Name" placeholder="Last Name, First Name" fieldRef={nameRef} />
-        <InputField name="summary" as="textarea" label="Summary" placeholder="Personal Summary" rows={3} fieldRef={summRef}/>
+        <InputField name="name" label="Full Name" placeholder="Last Name, First Name"/>
+        <InputField name="summary" as="textarea" label="Summary" placeholder="Personal Summary" rows={3}/>
         <Row>
           <Col>
-            <InputField name="email" label="Email" type="email" placeholder="Email Address" fieldRef={emailRef} />
+            <InputField name="email" label="Email" type="email" placeholder="Email Address" />
           </Col>
           <Col>
-            <InputField name="phone" label="Phone" type="text" placeholder="Phone Number" fieldRef={phoneRef} />
+            <InputField name="phone" label="Phone" type="text" placeholder="Phone Number"/>
           </Col>
         </Row>
         <Row>
           <Col>
-            <InputField name="twitter" label={<FaTwitter size={20}/>} placeholder={"X handle"} fieldRef={twitterRef} />
+            <InputField name="twitter" label={<FaTwitter size={20}/>} placeholder={"X handle"}/>
           </Col>
           <Col>
-            <InputField name="linkedin" label={<FaLinkedin size={20}/>} placeholder="LinkedIn URL" fieldRef={linkedInRef} />
+            <InputField name="linkedin" label={<FaLinkedin size={20}/>} placeholder="LinkedIn URL"/>
           </Col>
         </Row>
       </Form>

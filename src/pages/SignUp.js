@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Footer from '../components/Footer';
 import Header from '../components/Header'
 import Container from 'react-bootstrap/Container';
 import { FaGithub } from "react-icons/fa";
 import { Button } from 'react-bootstrap';
+import { useGithubApi } from '../contexts/GithubApiProvider';
 
 const SignUp = () => {
+  const githubApi = useGithubApi();
+
+  useEffect(() => {
+    githubApi.logout();
+  })
 
 return (
   <>

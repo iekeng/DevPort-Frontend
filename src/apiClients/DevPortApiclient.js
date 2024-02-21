@@ -19,11 +19,11 @@ export default class DevPortApiClient{
     try {
       response = await axios({
       method: options.method,
-      url: this.base_url + options.url + query, 
+      url: this.base_url + options.url + query,
       data: options.body ? JSON.stringify(options.body) : null,
       headers: {
         'Content-Type': 'application/json',
-      },
+      }
     })
       return {
         data: response.data,

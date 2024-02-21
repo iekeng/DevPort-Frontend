@@ -9,7 +9,6 @@ import { useGithubApi } from '../contexts/GithubApiProvider';
 import PersonalDetails from '../components/PersonalDetails';
 import Experience from '../components/Experience';
 import Education from '../components/Education';
-import { toBeRequired } from '@testing-library/jest-dom/dist/matchers';
 
 const PortfolioPage = () => {
   const [sectionNum, setSectionNum] = useState(1);
@@ -48,13 +47,12 @@ const PortfolioPage = () => {
       setIsLoading(false)
     }, 4800);
 
-  }, [api]);
+    return () => clearTimeout(timeout);
 
-  
+  }, [api, githubApi]);
 
   const handleAddSection = () => {
     setSectionNum(sectionNum + 1);
-    
   };
 
   return (

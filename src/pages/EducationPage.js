@@ -1,13 +1,13 @@
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import Container from 'react-bootstrap/Container';
-import InputField from './InputField';
+import InputField from '../components/InputField';
 import Form from 'react-bootstrap/Form'
-import Footer from './Footer';
+import Footer from '../components/Footer';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-export default function Education({title}) {
+export default function EducationPage({title}) {
     const [formData, setFormData] = useState([{
         institution: '',
         course: '',

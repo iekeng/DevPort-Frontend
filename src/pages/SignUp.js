@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-import Footer from '../components/Footer';
-import Header from '../components/Header'
 import Container from 'react-bootstrap/Container';
 import { FaGithub } from "react-icons/fa";
 import { Button } from 'react-bootstrap';

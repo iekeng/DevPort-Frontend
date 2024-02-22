@@ -6,9 +6,9 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner'
 import { useApi } from '../contexts/DevPortApiProvider';
 import { useGithubApi } from '../contexts/GithubApiProvider';
-import PersonalDetails from '../components/PersonalDetails';
-import Experience from '../components/Experience';
-import Education from '../components/Education';
+// import PersonalDetails from '../components/PersonalDetails';
+// import Experience from '../components/Experience';
+// import Education from '../components/Education';
 
 const PortfolioPage = () => {
   const [sectionNum, setSectionNum] = useState(1);
@@ -21,6 +21,10 @@ const PortfolioPage = () => {
   const navigate = useNavigate();
   
   const now = (step / 4) * 100;
+
+  const handleClick = () => {
+    return navigate('/PersonalDetailsPage')
+  }
 
   const handleNext = () => {
     setStep(step + 1);
@@ -39,7 +43,7 @@ const PortfolioPage = () => {
         localStorage.setItem('accessToken', response.data.token);
         githubApi.isAuthenticated ? console.log(localStorage.getItem('accessToken')) : console.log('nay');
       } else {
-        return navigate('/SignUp')
+        // return navigate('/SignUp')
       }
     })();
 
@@ -57,12 +61,21 @@ const PortfolioPage = () => {
 
   return (
     <>
-      { githubApi.isAuthenticated ?
+    <Container>
+    {githubApi.isAuthenticated && 
+      <div className='mt-5 flex-grow'>
+        <Button variant="dark" className='w-100 mt-5' onClick={handleClick} disabled={isLoading}>
+          Proceed 
+        </Button>
+      </div>
+    }
+    </Container>
+      {/* { githubApi.isAuthenticated ?
       <>
         <Container className="mb-5">
           {step === 0 && 
             <div className='mt-5 flex-grow'>
-              <Button variant="dark" className='w-100 mt-5' onClick={handleNext} disabled={isLoading}>
+              <Button variant="dark" className='w-100 mt-5' onClick={handleClick} disabled={isLoading}>
                 Proceed 
               </Button>
             </div>
@@ -106,7 +119,7 @@ const PortfolioPage = () => {
           <Spinner />
         </div>
       </>
-      }
+      } */}
       
     </>
   );

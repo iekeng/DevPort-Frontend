@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
-import MultiFields from './MultiFields';
-import InputField from './InputField';
+import MultiFields from '../components/MultiFields';
+import InputField from '../components/InputField';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-const Experience = ({ onSave }) => {
+const ExperiencePage = ({ onSave }) => {
     const userId = localStorage.getItem('userId');
     const [isHidden, setIsHidden] = useState(true);
     const [formData, setFormData] = useState({
@@ -277,5 +277,5 @@ const Experience = ({ onSave }) => {
      );
  };
 
-export default Experience;
+export default ExperiencePage;
  

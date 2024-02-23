@@ -1,22 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import InputField from './InputField';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { FaPlusSquare as Plus } from 'react-icons/fa';
+import { useGithubApi } from '../contexts/GithubApiProvider';
+import { useApi } from '../contexts/DevPortApiProvider';
 
 
-const MultiFields = ({ name }) => {
-  const [formDataArray, setFormDataArray] = useState([{fieldValue: ''}])
+const MultiFields = ({ endpoint, value, api, github }) => {
+  const devportApi = useApi();
+  const githubApi = useGithubApi();
+  const [formDataArray, setFormDataArray] = useState([{fieldValue: ''}]);
   const accessToken = localStorage.getItem('accessToken');
+  const userId = localStorage.getItem('userId');
 
   const handleAddField = () => {
     setFormDataArray([...formDataArray, {fieldValue:''}])
   }
 
-  const handleSubmit = () => {
-    //todo
+  const handleRemoveField = (i) => {
+    let newFormDataArray = [...formDataArray];
+    newFormDataArray.splice(i, 1);
+    setFormDataArray(newFormDataArray);
+  }
+
+  const handleChange = (i, e) => {
+    let newFormDataArray = [...formDataArray];
+    newFormDataArray[i][e.target.name] = e.target.value;
+    setFormDataArray(newFormDataArray);
+  }
+  
+
+  const handleSubmit = async () => {
+    const response = await devportApi.get(`${endpoint}/${userId}`);
+    if(!response){
+      let data = {value: [...formDataArray]}
+      await devportApi.post(`${endpoint}/${userId}`, data)
+    } else {
+      await devportApi.put(`${endpoint}/${userId}`, data)
+    }
   }
 
   // useEffect(() => {
@@ -144,13 +167,18 @@ const MultiFields = ({ name }) => {
       <div className='d-flex flex-row flex-wrap justify-content-start'>
         {formDataArray.map((formData, index) => (
           <div className='m-2' key={index}>
-            <InputField name={name} type="text" placeholder="..." value={formData.formValue}/>
+            <InputField name={name} type="text" placeholder="..." value={formData.formValue} onChange={ e => handleChange(index, e)}/>
+            {index ?
+            <Button className="ms-auto p-2" onClick={() => handleRemoveField(index)} style={{background: 'none', border: 'none', color: 'black'}}>-</Button>
+            : null
+            }
           </div>
         ))}
       </div>
       <div className="d-flex">
         <Button className="py-1" onClick={handleSubmit}>Save</Button>
         <Button className="ms-auto p-2" onClick={handleAddField} style={{background: 'none', border: 'none', color: 'black'}}>+ Add field</Button>
+       
       </div>
     </div>
     </>

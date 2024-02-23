@@ -5,11 +5,12 @@ import MultiFields from '../components/MultiFields';
 import InputField from '../components/InputField';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button'
 
-const ExperiencePage = ({ onSave }) => {
+const ExperiencePage = () => {
     const userId = localStorage.getItem('userId');
     const [isHidden, setIsHidden] = useState(true);
-    const [formData, setFormData] = useState({
+    const [formDataArray, setFormDataArray] = useState([{
         company: '',
         position: '',
         startDate: '',
@@ -17,7 +18,7 @@ const ExperiencePage = ({ onSave }) => {
         achievements: [], // Store achievements as an array
         responsibilities: '',
         userId: userId,
-    });
+    }]);
     const [isAdding, setIsAdding] = useState(false);
 
     const toggleDetails = () => {
@@ -25,52 +26,52 @@ const ExperiencePage = ({ onSave }) => {
     };
 
     const saveWorkDetails = async (data) => {
-        // Ensure that data.achievements is an array
-        const splitAchievements = Array.isArray(data.achievements)
-            ? data.achievements
-            : data.achievements.split('\n').map(item => item.trim());
+    //     // Ensure that data.achievements is an array
+    //     const splitAchievements = Array.isArray(data.achievements)
+    //         ? data.achievements
+    //         : data.achievements.split('\n').map(item => item.trim());
     
-        try {
-            const postData = {
-                ...data,
-                achievements: splitAchievements, // Update the achievements field
-                userId: userId,
-            };
+    //     try {
+    //         const postData = {
+    //             ...data,
+    //             achievements: splitAchievements, // Update the achievements field
+    //             user: userId,
+    //         };
 
-            data.userId = userId;
-            const response = await axios.post(`http://localhost:4000/experience/${userId}`, data, {});
+    //         data.userId = userId;
+    //         const response = await axios.post(`http://localhost:4000/experience/${userId}`, data, {});
             
-            if (response.status === 200) {
-                console.log('Work details saved successfully');
-            }
-            onSave('Projects');
-        } catch (error) {
-            console.error('Error saving work details', error);
-        }
+    //         if (response.status === 200) {
+    //             console.log('Work details saved successfully');
+    //         }
+    //         onSave('Projects');
+    //     } catch (error) {
+    //         console.error('Error saving work details', error);
+    //     }
     };
 
     const handleSaveWorkDetails = async (event) => {
-        event.preventDefault();
-        saveWorkDetails(formData);
-        setIsHidden(true);
-        setIsAdding(false);
+        // event.preventDefault();
+        // saveWorkDetails(formData);
+        // setIsHidden(true);
+        // setIsAdding(false);
     };
 
     const handleChange = (event) => {
-        const { name, value } = event.target;
+        // const { name, value } = event.target;
     
-        if (name === 'achievements') {
-            // Handle achievements as a string (text area input)
-            setFormData({
-                ...formData,
-                [name]: value,
-            });
-        } else {
-            setFormData({
-                ...formData,
-                [name]: value,
-            });
-        };
+        // if (name === 'achievements') {
+        //     // Handle achievements as a string (text area input)
+        //     setFormData({
+        //         ...formData,
+        //         [name]: value,
+        //     });
+        // } else {
+        //     setFormData({
+        //         ...formData,
+        //         [name]: value,
+        //     });
+        // };
     };  
 
     const addAnotherForm = () => {
@@ -80,6 +81,31 @@ const ExperiencePage = ({ onSave }) => {
     const cancelAddForm = () => {
         setIsAdding(false);
     };
+
+    const handleSubmit = async () => {
+        //get all user experience by id
+        // const experiences = await api.get(`/experience/${userId}`)
+        // if (!experiences || experiences.length === 0){
+        //     //make post
+        //     api.post(`/experience/${userId}`, data)
+        // } else {
+        //     //make put
+        //     api.put(`/experience/${userId}`, data)
+        // }
+
+    }
+
+    const handleAdd = () => {
+        setFormDataArray(...formDataArray, {
+            company: '',
+            position: '',
+            startDate: '',
+            endDate: '',
+            achievements: [],
+            responsibilities: '',
+            userId: userId,
+        })
+    }
 
     return (
     //     <div>
@@ -256,22 +282,30 @@ const ExperiencePage = ({ onSave }) => {
 
     //    </div>
   <>
-  <Form>
-    <InputField name="position" label="Position" placeholder="Position" />
-    <Row>
-      <Col>
-          <InputField name="startDate" type="date" label="Start Date" placeholder="Start Date" />
-      </Col>
-      <Col>
-          <InputField name="endDate" type="date" label="End Date" placeholder="End Date" />
-      </Col>
-    </Row>
-    
-    <h3>Achievements:</h3>
-    <MultiFields name="achievements" />
-    <p className='fs-6'>Responsibilities:</p>
-    <MultiFields name="responsibility"/>
-  </Form>
+  
+  {formDataArray.map((formData, index) => (
+    <Form>
+        <div key={index}>
+            <InputField name="position" label="Position" placeholder="Position" value={formData.position}/>
+            <Row>
+            <Col>
+                <InputField name="startDate" type="date" label="Start Date" placeholder="Start Date" value={formData.startDate}/>
+            </Col>
+            <Col>
+                <InputField name="endDate" type="date" label="End Date" placeholder="End Date" value={formData.endDate}/>
+            </Col>
+            </Row>
+            
+            <h3>Achievements:</h3>
+            <MultiFields name="achievements" />
+            <p className='fs-6'>Responsibilities:</p>
+            <MultiFields name="responsibility"/>
+        </div>
+    </Form>))}
+
+  <Button className="mb-4 mt-4 me-4" variant="primary" onClick={handleAdd}>
+    + Add Section
+  </Button>
 
   </>
      );

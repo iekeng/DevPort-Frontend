@@ -16,7 +16,7 @@ const ExperiencePage = () => {
         startDate: '',
         endDate: '',
         achievements: [], // Store achievements as an array
-        responsibilities: '',
+        responsibilities: [],
         userId: userId,
     }]);
     const [isAdding, setIsAdding] = useState(false);
@@ -96,15 +96,14 @@ const ExperiencePage = () => {
     }
 
     const handleAdd = () => {
-        setFormDataArray(...formDataArray, {
+        setFormDataArray([...formDataArray, {
             company: '',
             position: '',
             startDate: '',
             endDate: '',
-            achievements: [],
-            responsibilities: '',
-            userId: userId,
-        })
+            achievements: [], // Store achievements as an array
+            responsibilities: [],
+        }])
     }
 
     return (
@@ -282,7 +281,7 @@ const ExperiencePage = () => {
 
     //    </div>
   <>
-  
+  <div className='mb-5'>
   {formDataArray.map((formData, index) => (
     <Form>
         <div key={index}>
@@ -301,12 +300,14 @@ const ExperiencePage = () => {
             <p className='fs-6'>Responsibilities:</p>
             <MultiFields name="responsibility"/>
         </div>
-    </Form>))}
+    </Form>
+    ))
+    }
 
   <Button className="mb-4 mt-4 me-4" variant="primary" onClick={handleAdd}>
     + Add Section
   </Button>
-
+  </div>
   </>
      );
  };

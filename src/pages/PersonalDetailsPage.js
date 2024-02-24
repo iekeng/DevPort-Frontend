@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import InputField from '../components/InputField';
 import MultiFields from '../components/MultiFields';
 import Form from 'react-bootstrap/Form'
@@ -12,16 +12,18 @@ import { NavLink } from 'react-bootstrap';
 import { FaTwitter, FaLinkedin,  } from "react-icons/fa";
 import { useApi } from '../contexts/DevPortApiProvider';
 import { useGithubApi } from '../contexts/GithubApiProvider';
+import { useNavigate } from 'react-router-dom';
 
 const PersonalDetailsPage = () => {
   const api = useApi();
   const githubApi = useGithubApi();
-  const nameRef = useRef();
-  const emailRef = useRef();
-  const phoneRef = useRef();
-  const twitterRef = useRef();
-  const linkedInRef = useRef();
-  const summRef = useRef();
+  // const nameRef = useRef();
+  // const emailRef = useRef();
+  // const phoneRef = useRef();
+  // const twitterRef = useRef();
+  // const linkedInRef = useRef();
+  // const summRef = useRef();
+  const navigate = useNavigate();
 
 const [formData, setFormData] = useState({});
 const [isLoading, setIsLoading] = useState(true);
@@ -80,6 +82,10 @@ useEffect(() => {
     const newFormData = formData;
     setFormData(formData.target.value);
   }
+
+  const handleNext = (e) => {
+    navigate('/ExperiencePage');
+  }
 // const handleSavePersonalDetails = async (data) => {
 //   let response;
 
@@ -134,9 +140,14 @@ useEffect(() => {
       {/* <Button as NavLink to='/ExperiencePage'  className="mb-4 mt-4 me-4" variant="primary">
         Next
       </Button> */}
-      <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={submit}>
-        Submit
+      <div className='d-flex mt-5 justify-content-around'>
+        <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={submit}>
+          Submit
+        </Button>
+        <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleNext}>
+          Next
       </Button>
+      </div>
     </div>
     </> 
     );

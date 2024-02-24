@@ -87,7 +87,7 @@ export default function EducationPage({title}) {
     return (
         <>
         <Container>
-            <div className='fs2 pt-2'>
+            <div className='fs2 pt-2mb-5 '>
                 {title && <h1>Education Section</h1>}
             </div>
             <Form className="border border-gray-600 p-3 mb-3">

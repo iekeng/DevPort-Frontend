@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import axios from 'axios';
+import { NavLink } from 'react-bootstrap';
 
 import { FaTwitter, FaLinkedin,  } from "react-icons/fa";
 import { useApi } from '../contexts/DevPortApiProvider';
@@ -53,21 +54,9 @@ useEffect(() => {
         console.log(error)
       } finally {
         setIsLoading(false);
-        if (formData){
-          console.log(formData)
-        }
       }
     }
    }
-
-
-  // const save =  async() => {
-  //   userData = await fetchPersonalDetailsFromGitHub();
-  //   console.log(JSON.stringify(userData))
-  //   // const response = await api.post('/users', userData)    
-  //   // const userId = response.data._id.toString();
-  //   // localStorage.setItem('userId', userId);
-  // }
 
   // const fetch = async () => {
   //   const userId = localStorage.getItem('userId')
@@ -79,8 +68,18 @@ useEffect(() => {
   fetchPersonalDetailsFromGitHub();
  }, [githubApi]);
 
+  const submit =  async() => {
+    const response = await api.post('/users', formData)
+    console.log(response)    
+    const userId = response.data._id.toString();
+    localStorage.setItem('userId', userId);
+    console.log(localStorage.getItem('userId'))
+  }
 
-
+  const handleChange = (e) => {
+    const newFormData = formData;
+    setFormData(formData.target.value);
+  }
 // const handleSavePersonalDetails = async (data) => {
 //   let response;
 
@@ -106,9 +105,10 @@ useEffect(() => {
   return (
     <>
       //Force email to lower case in the form
+      <div className='mb-5'>
       <h5>Details</h5>
       <Form className="border border-gray-600 p-4 mb-3">
-        <InputField name="name" label="Full Name" placeholder="Last Name, First Name" value={formData.name}/>
+        <InputField name="name" label="Full Name" placeholder="Last Name, First Name" value={formData.name} onChange={e => handleChange(e)}/>
         <InputField  name="summary" as="textarea" label="Summary" placeholder="Personal Summary" rows={3} value={formData.summary}/>
         <Row>
           <Col>
@@ -131,9 +131,13 @@ useEffect(() => {
       <MultiFields name="soft" />
       <h5>Technical Skills</h5>
       <MultiFields name="technical" />
-      <Button className="mb-4 mt-4 me-4" variant="primary">
+      {/* <Button as NavLink to='/ExperiencePage'  className="mb-4 mt-4 me-4" variant="primary">
         Next
+      </Button> */}
+      <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={submit}>
+        Submit
       </Button>
+    </div>
     </> 
     );
 };

@@ -15,6 +15,7 @@ const PortfolioPage = () => {
   const [experienceSectionNum, setExperienceSectionNum] = useState(1);
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({});
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const api = useApi();
   const githubApi = useGithubApi();
@@ -41,6 +42,7 @@ const PortfolioPage = () => {
       console.log(response)
       if(response.statusText === "OK") {
         localStorage.setItem('accessToken', response.data.token);
+        setIsAuthorized(true);
         githubApi.isAuthenticated ? console.log(localStorage.getItem('accessToken')) : console.log('nay');
       } else {
         // return navigate('/SignUp')
@@ -62,12 +64,16 @@ const PortfolioPage = () => {
   return (
     <>
     <Container>
-    {githubApi.isAuthenticated && 
+    {(githubApi.isAuthenticated && isAuthorized) ?
       <div className='mt-5 flex-grow'>
         <Button variant="dark" className='w-100 mt-5' onClick={handleClick} disabled={isLoading}>
           Proceed 
         </Button>
+      </div>:
+      <div className='text-center mt-5'>
+         <Spinner />
       </div>
+     
     }
     </Container>
       {/* { githubApi.isAuthenticated ?

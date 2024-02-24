@@ -26,6 +26,7 @@ function App() {
             <Route path="/EducationPage" element={<EducationPage />} />
             <Route path="/PersonalDetailsPage" element={<PersonalDetailsPage />} />
             <Route path="/PortfolioPage" element={<PortfolioPage />} /> 
+            <Route path="*" element={<LandingPage />} /> 
           </Routes>
         </Container>
         </GithubApiProvider>

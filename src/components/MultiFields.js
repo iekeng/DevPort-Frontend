@@ -8,12 +8,13 @@ import { useGithubApi } from '../contexts/GithubApiProvider';
 import { useApi } from '../contexts/DevPortApiProvider';
 
 
-const MultiFields = ({ endpoint, value, api, github }) => {
+const MultiFields = ({ endpoint, value}) => {
   const devportApi = useApi();
   const githubApi = useGithubApi();
   const [formDataArray, setFormDataArray] = useState([{fieldValue: ''}]);
-  const accessToken = localStorage.getItem('accessToken');
   const userId = localStorage.getItem('userId');
+  console.log(userId);
+  const apiKey = value;
 
   const handleAddField = () => {
     setFormDataArray([...formDataArray, {fieldValue:''}])
@@ -33,62 +34,55 @@ const MultiFields = ({ endpoint, value, api, github }) => {
   
 
   const handleSubmit = async () => {
-    const response = await devportApi.get(`${endpoint}/${userId}`);
-    if(!response){
-      let data = {value: [...formDataArray]}
-      await devportApi.post(`${endpoint}/${userId}`, data)
-    } else {
-      await devportApi.put(`${endpoint}/${userId}`, data)
+    try {
+      const response = await devportApi.get(`${endpoint}/${userId}`);
+      if(!response){
+        await devportApi.post(`${endpoint}/${userId}`, {apiKey: [...formDataArray]})
+      } else {
+        await devportApi.put(`${endpoint}/${userId}`, {apiKey: [...formDataArray]})
+      }
+    } catch (error) {
+      console.log(error);
     }
+    
   }
 
-  // useEffect(() => {
-  //   if (accessToken) {
-  //     fetchSkillsFromGitHubRepos();
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (githubApi.isAuthenticated) {
+      endpoint === '/skills' && fetchSkillsFromGitHubRepos();
+    }
+  }, []);
 
-  // const fetchSkillsFromGitHubRepos = async () => {
-  //   try {
-  //     const userReposUrl = 'https://api.github.com/user/repos';
-  //     const userReposResponse = await axios.get(userReposUrl, {
-  //       headers: {
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //     });
+  const fetchSkillsFromGitHubRepos = async () => {
+    try {
+      const userReposResponse = await githubApi.get('/user/repos');
 
-  //     if (userReposResponse.status === 200) {
-  //       const userRepos = userReposResponse.data;
-  //       const uniqueLanguages = new Set();
-  //       const fetchPromises = [];
 
-  //       for (const repo of userRepos) {
-  //         const languagesUrl = repo.languages_url;
-  //         fetchPromises.push(
-  //           axios.get(languagesUrl, {
-  //             headers: {
-  //               Authorization: `Bearer ${accessToken}`,
-  //             },
-  //           })
-  //         );
-  //       }
+      const userRepos = userReposResponse.data;
+      const uniqueLanguages = new Set();
+      const fetchPromises = [];
 
-  //       // Fetch languages for all repositories in parallel
-  //       const repoLanguagesResponses = await Promise.all(fetchPromises);
+      for (const repo of userRepos) {
+        const languagesUrl = repo.languages_url;
+        fetchPromises.push(await githubApi.get(languagesUrl))
+      }
 
-  //       for (const response of repoLanguagesResponses) {
-  //         if (response.status === 200) {
-  //           const repoLanguages = Object.keys(response.data);
-  //           repoLanguages.forEach((language) => uniqueLanguages.add(language));
-  //         }
-  //       }
+      // Fetch languages for all repositories in parallel
+      const repoLanguagesResponses = await Promise.all(fetchPromises);
 
-  //       setSkills(Array.from(uniqueLanguages));
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching skills from GitHub repositories', error);
-  //   }
-  // };
+      for (const response of repoLanguagesResponses) {
+        if (response.status === 200) {
+          const repoLanguages = Object.keys(response.data);
+          repoLanguages.forEach((language) => uniqueLanguages.add(language));
+        }
+      }
+
+      // setSkills(Array.from(uniqueLanguages));
+      
+    } catch (error) {
+      console.error('Error fetching skills from GitHub repositories', error);
+    }
+  };
 
   // const saveLanguagesToDB = async () => {
   //   try {
@@ -105,71 +99,19 @@ const MultiFields = ({ endpoint, value, api, github }) => {
   //   }
   // };
 
-  // const handleEditClick = () => {
-  //   setIsEditing(true);
-  // };
-
-  // const handleSaveClick = () => {
-  //   setIsEditing(false);
-  //   saveLanguagesToDB();
-  // };
-
   // const handleAddSection = () => {
   //   setSectionNum(sectionNum + 1);
   // };
   
   return (
-    // <div>
-    // <main style={{marginTop: '450px'}}>
-    //   <section id="skills-details" style={{ display: 'block', margin: '0 auto' }}>
-    //     <div>
-    //       {isEditing ? (
-    //         <ul className="skills-list-edit">
-    //           {skills.map((skill, index) => (
-    //             <li key={index} className="nav-content" style={{ width: '100px' }}>
-    //               <input
-    //                 type="text"
-    //                 style={{ width: '80px', background: 'blue', border: '0', color: 'white', textAlign: 'center' }}
-    //                 value={skill}
-    //                 onChange={(e) => {
-    //                   const updatedSkills = [...skills];
-    //                   updatedSkills[index] = e.target.value;
-    //                   setSkills(updatedSkills);
-    //                 }}
-    //               />
-    //             </li>
-    //           ))}
-    //         </ul>
-    //       ) : (
-    //         <ul className="skills-list-view">
-    //           {skills.map((skill, index) => (
-    //             <li key={index} className="nav-content" style={{ width: '100px' }}>
-    //               {skill}
-    //             </li>
-    //           ))}
-    //         </ul>
-    //       )}
-    //     </div>
-    //   </section>
-    //   {isEditing ? (
-    //     <button type="submit" className="LSbutton" onClick={handleSaveClick} style={{ display: 'block', margin: 'auto' }}>
-    //       Save
-    //     </button>
-    //   ) : (
-    //     <button type="button" className="LSbutton" onClick={handleEditClick} style={{ display: 'block', margin: 'auto' }}>
-    //       Edit
-    //     </button>
-    //   )}
-    // </main>
-    // </div>
     <>
     <div className="mx-auto mb-2">
       <div className='d-flex flex-row flex-wrap justify-content-start'>
         {formDataArray.map((formData, index) => (
           <div className='m-2' key={index}>
-            <InputField name={name} type="text" placeholder="..." value={formData.formValue} onChange={ e => handleChange(index, e)}/>
+            <InputField name={value} type="text" placeholder="..." value={formData.formValue} onChange={ e => handleChange(index, e)}/>
             {index ?
-            <Button className="ms-auto p-2" onClick={() => handleRemoveField(index)} style={{background: 'none', border: 'none', color: 'black'}}>-</Button>
+            <Button className="ms-auto p-2" onClick={() => handleRemoveField(index)} style={{background: 'none', border: 'none', color: 'black'}}>- Remove Field</Button>
             : null
             }
           </div>
@@ -178,7 +120,6 @@ const MultiFields = ({ endpoint, value, api, github }) => {
       <div className="d-flex">
         <Button className="py-1" onClick={handleSubmit}>Save</Button>
         <Button className="ms-auto p-2" onClick={handleAddField} style={{background: 'none', border: 'none', color: 'black'}}>+ Add field</Button>
-       
       </div>
     </div>
     </>

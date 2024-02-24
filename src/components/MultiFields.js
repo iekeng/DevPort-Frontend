@@ -20,9 +20,9 @@ const MultiFields = ({ endpoint, value}) => {
     setFormDataArray([...formDataArray, {fieldValue:''}])
   }
 
-  const handleRemoveField = (i) => {
+  const handleRemoveField = () => {
     let newFormDataArray = [...formDataArray];
-    newFormDataArray.splice(i, 1);
+    newFormDataArray.splice(-1, 1);
     setFormDataArray(newFormDataArray);
   }
 
@@ -110,16 +110,13 @@ const MultiFields = ({ endpoint, value}) => {
         {formDataArray.map((formData, index) => (
           <div className='m-2' key={index}>
             <InputField name={value} type="text" placeholder="..." value={formData.formValue} onChange={ e => handleChange(index, e)}/>
-            {index ?
-            <Button className="ms-auto p-2" onClick={() => handleRemoveField(index)} style={{background: 'none', border: 'none', color: 'black'}}>- Remove Field</Button>
-            : null
-            }
           </div>
         ))}
       </div>
       <div className="d-flex">
         <Button className="py-1" onClick={handleSubmit}>Save</Button>
-        <Button className="ms-auto p-2" onClick={handleAddField} style={{background: 'none', border: 'none', color: 'black'}}>+ Add field</Button>
+        <Button className="ms-auto p-1" onClick={handleRemoveField} style={{background: 'none', border: 'none', color: 'black'}}>- field</Button>
+        <Button className=" p-2" onClick={handleAddField} style={{background: 'none', border: 'none', color: 'black'}}>+ field</Button>
       </div>
     </div>
     </>

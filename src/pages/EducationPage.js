@@ -6,9 +6,10 @@ import Form from 'react-bootstrap/Form'
 import Footer from '../components/Footer';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 
-export default function EducationPage({title}) {
-    const [formData, setFormData] = useState([{
+export default function EducationPage() {
+    let [formDataArray, setFormDataArray] = useState([{
         institution: '',
         course: '',
         startDate: '',
@@ -19,13 +20,6 @@ export default function EducationPage({title}) {
 
     // const [educationDetails, setEducationDetails] = useState([]); // To store multiple education details
     // const [isAdding, setIsAdding] = useState(false);
-
-    const institutionRef = useRef()
-    const courseRef = useRef()
-    const degreeRef = useRef()
-    const locationRef = useRef()
-    const startDateRef = useRef()
-    const endDateRef = useRef()
 
     // const saveEducationDetails = async (data) => {
     //     try {            
@@ -68,13 +62,28 @@ export default function EducationPage({title}) {
     //     // setIsAdding(false);
     // };
 
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setFormData({
-            ...formData,
+    const handleInputChange = (i, e) => {
+        const { name, value } = e.target;
+        let newFormData = {
+            ...formDataArray[i],
             [name]: value,
-        });
+        };
+        formDataArray[i] = newFormData;
+        setFormDataArray([...formDataArray]); // Ensure to create a new array to trigger a state update
     };
+
+    const handleAdd = () => {
+        let newFormDataArray = [...formDataArray, {
+            institution: '',
+            course: '',
+            startDate: '',
+            endDate: '',
+            location: '',
+            user: '',
+        }];
+
+        setFormDataArray(newFormDataArray);
+    }
 
     // const addAnotherForm = () => {
     //     setIsAdding(true);
@@ -86,32 +95,38 @@ export default function EducationPage({title}) {
 
     return (
         <>
-        <Container>
-            <div className='fs2 pt-2mb-5 '>
-                {title && <h1>Education Section</h1>}
+        <div className='mb-5'>
+            <div className='fs2 pt-2'>
+                <h5>Education</h5>
             </div>
+            {formDataArray.map((formData, index)=>(
+            <div key={index}>
             <Form className="border border-gray-600 p-3 mb-3">
-                <InputField name="institution" label="Institution" placeholder="Institution" fieldRef={institutionRef} onChange={handleInputChange}/>
+                <InputField name="institution" label="Institution" placeholder="Institution" onChange={e => handleInputChange(index, e)}/>
                 
-                <InputField name="location" label="City" placeholder="City" locationRef={locationRef} onChange={handleInputChange}/>
+                <InputField name="location" label="City" placeholder="City" onChange={e => handleInputChange(index, e)}/>
                 <Row>
                   <Col>
-                    <InputField name="course" label="Course" placeholder="Course" fieldRef={courseRef} onChange={handleInputChange}/>
+                    <InputField name="course" label="Course" placeholder="Course" onChange={e => handleInputChange(index, e)}/>
                   </Col>
                   <Col>
-                    <InputField name="degree" label="Degree" placeholder="Degree" fieldRef={degreeRef} onChange={handleInputChange}/>
+                    <InputField name="degree" label="Degree" placeholder="Degree" onChange={e => handleInputChange(index, e)}/>
                   </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <InputField name="startDate" label="Start Date" placeholder="Start Date" type="date" fieldRef={startDateRef} onChange={handleInputChange}/>
+                        <InputField name="startDate" label="Start Date" placeholder="Start Date" type="date" onChange={e => handleInputChange(index, e)}/>
                     </Col>
                     <Col>
-                        <InputField name="endDate" label="End Date" placeholder="End Date" type="date" fieldRef={endDateRef} onChange={handleInputChange}/>
+                        <InputField name="endDate" label="End Date" placeholder="End Date" type="date" onChange={e => handleInputChange(index, e)}/>
                     </Col>
                 </Row>
             </Form>
-        </Container>
+            </div>))}
+            <Button className="mb-4 mt-4 me-4" variant="primary" onClick={handleAdd}>
+            + Add Section
+            </Button>
+            </div>
         </>
         // <div>
         // <main>

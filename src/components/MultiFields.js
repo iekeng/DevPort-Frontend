@@ -108,15 +108,18 @@ const MultiFields = ({ endpoint, value}) => {
     <div className="mx-auto mb-2">
       <div className='d-flex flex-row flex-wrap justify-content-start'>
         {formDataArray.map((formData, index) => (
-          <div className='m-2' key={index}>
+          <div className='mx-2' key={index}>
             <InputField name={value} type="text" placeholder="..." value={formData.formValue} onChange={ e => handleChange(index, e)}/>
           </div>
         ))}
       </div>
       <div className="d-flex">
         <Button className="py-1" onClick={handleSubmit}>Save</Button>
-        <Button className="ms-auto p-1" onClick={handleRemoveField} style={{background: 'none', border: 'none', color: 'black'}}>- field</Button>
-        <Button className=" p-2" onClick={handleAddField} style={{background: 'none', border: 'none', color: 'black'}}>+ field</Button>
+        <div className='ms-auto'>
+          {formDataArray.length > 1 && 
+          <Button className=" p-2" onClick={handleRemoveField} style={{background: 'none', border: 'none', color: 'black'}}>- field</Button>}
+          <Button className=" p-2" onClick={handleAddField} style={{background: 'none', border: 'none', color: 'black'}}>+ field</Button>
+        </div>
       </div>
     </div>
     </>

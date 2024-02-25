@@ -79,8 +79,9 @@ useEffect(() => {
   }
 
   const handleChange = (e) => {
-    const newFormData = formData;
-    setFormData(formData.target.value);
+    const {name, value} = e.target;
+    const newFormData = {...formData, [name]: value};
+    setFormData(newFormData);
   }
 
   const handleNext = (e) => {
@@ -115,13 +116,13 @@ useEffect(() => {
       <h5>Details</h5>
       <Form className="border border-gray-600 p-4 mb-3">
         <InputField name="name" label="Full Name" placeholder="Last Name, First Name" value={formData.name} onChange={e => handleChange(e)}/>
-        <InputField  name="summary" as="textarea" label="Summary" placeholder="Personal Summary" rows={3} value={formData.summary}/>
+        <InputField  name="summary" as="textarea" label="Summary" placeholder="Personal Summary" rows={3} value={formData.summary} onChange={e => handleChange(e)}/>
         <Row>
           <Col>
-            <InputField name="email" label="Email" type="email" placeholder="Email Address" value={formData.email}/>
+            <InputField name="email" label="Email" type="email" placeholder="Email Address" value={formData.email} onChange={e => handleChange(e)}/>
           </Col>
           <Col>
-            <InputField name="phone" label="Phone" type="text" placeholder="Phone Number" value={formData.phone}/>
+            <InputField name="phone" label="Phone" type="text" placeholder="Phone Number" value={formData.phone} onChange={e => handleChange(e)}/>
           </Col>
         </Row>
         <Row>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import MultiFields from '../components/MultiFields';
 import InputField from '../components/InputField';
@@ -10,7 +10,7 @@ import { useApi } from '../contexts/DevPortApiProvider';
 
 const ExperiencePage = () => {
     const userId = localStorage.getItem('userId');
-    const [isHidden, setIsHidden] = useState(true);
+    const navigate = useNavigate();
     const api = useApi();
   
     const [formDataArray, setFormDataArray] = useState([{
@@ -22,7 +22,18 @@ const ExperiencePage = () => {
         responsibilities: [],
         user: userId,
     }]);
-    const navigate = useNavigate();
+    
+    useEffect(() => {
+      const setup = async () => {
+        const response = await api.get(`/experience/${userId}`);
+        console.log(response)
+      if (response){
+        setFormDataArray(response.data)
+      }
+      }
+
+      setup();
+    }, [])
 
     const handleNext = () => {
       navigate('/EducationPage');
@@ -78,18 +89,18 @@ const ExperiencePage = () => {
                 <Form className="border border-gray-600 p-3 mb-3">
                         <Row>
                             <Col>
-                                <InputField name={`organisation-${index}`} label="Organisation" placeholder="Organisation" onChange={e => handleInputChange(index, e)}/>
+                                <InputField name={`organisation-${index}`} label="Organisation" placeholder="Organisation" value={formData.organisation} onChange={e => handleInputChange(index, e)}/>
                             </Col>
                             <Col>
-                                <InputField name={`position-${index}`} label="Position" placeholder="Position" onChange={e => handleInputChange(index, e)}/>
+                                <InputField name={`position-${index}`} label="Position" placeholder="Position" value={formData.position} onChange={e => handleInputChange(index, e)}/>
                             </Col>
                         </Row>
                         <Row>
                         <Col>
-                            <InputField name={`startDate-${index}`} type="date" label="Start Date" placeholder="Start Date" onChange={e => handleInputChange(index, e)}/>
+                            <InputField name={`startDate-${index}`} type="date" label="Start Date" placeholder="Start Date" value={formData.startDate} onChange={e => handleInputChange(index, e)}/>
                         </Col>
                         <Col>
-                            <InputField name={`endDate-${index}`} type="date" label="End Date" placeholder="End Date" onChange={e => handleInputChange(index, e)}/>
+                            <InputField name={`endDate-${index}`} type="date" label="End Date" placeholder="End Date" value={formData.endDate} onChange={e => handleInputChange(index, e)}/>
                         </Col>
                         </Row>
                         
@@ -106,12 +117,12 @@ const ExperiencePage = () => {
           </Button>
         
         <div className='d-flex mt-5 justify-content-around'>
-        <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleSubmit}>
-          Submit
+          <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleSubmit}>
+            Submit
+          </Button>
+          <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleNext}>
+            Next
         </Button>
-        <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleNext}>
-          Next
-      </Button>
       </div>
       </div>
         </>

@@ -50,4 +50,8 @@ export default class DevPortApiClient{
   async put(url, body, options){
     return this.request({method:'PUT', url, body, ...options })
   }
+
+  async del(url, body, options){
+    return this.request({method:'DELETE', url, ...options })
+  }
 }

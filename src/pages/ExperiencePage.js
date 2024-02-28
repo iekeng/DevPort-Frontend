@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import MultiFields from '../components/MultiFields';
 import InputField from '../components/InputField';
@@ -7,10 +6,13 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button'
 import { useNavigate } from 'react-router-dom';
+import { useApi } from '../contexts/DevPortApiProvider';
 
 const ExperiencePage = () => {
     const userId = localStorage.getItem('userId');
     const [isHidden, setIsHidden] = useState(true);
+    const api = useApi();
+  
     const [formDataArray, setFormDataArray] = useState([{
         organisation: '',
         position: '',
@@ -20,48 +22,11 @@ const ExperiencePage = () => {
         responsibilities: [],
         user: userId,
     }]);
-    const [isAdding, setIsAdding] = useState(false);
     const navigate = useNavigate();
-
-    const toggleDetails = () => {
-        setIsHidden(!isHidden);
-    };
 
     const handleNext = () => {
       navigate('/EducationPage');
     }
-
-    const saveWorkDetails = async (data) => {
-    //     // Ensure that data.achievements is an array
-    //     const splitAchievements = Array.isArray(data.achievements)
-    //         ? data.achievements
-    //         : data.achievements.split('\n').map(item => item.trim());
-    
-    //     try {
-    //         const postData = {
-    //             ...data,
-    //             achievements: splitAchievements, // Update the achievements field
-    //             user: userId,
-    //         };
-
-    //         data.userId = userId;
-    //         const response = await axios.post(`http://localhost:4000/experience/${userId}`, data, {});
-            
-    //         if (response.status === 200) {
-    //             console.log('Work details saved successfully');
-    //         }
-    //         onSave('Projects');
-    //     } catch (error) {
-    //         console.error('Error saving work details', error);
-    //     }
-    };
-
-    const handleSaveWorkDetails = async (event) => {
-        // event.preventDefault();
-        // saveWorkDetails(formData);
-        // setIsHidden(true);
-        // setIsAdding(false);
-    };
 
     const handleInputChange = (index, e) => {
         const {name, value} = e.target
@@ -73,26 +38,22 @@ const ExperiencePage = () => {
         setFormDataArray(newFormDataArray);
       };
 
-    const addAnotherForm = () => {
-        setIsAdding(true);
-    };
-
-    const cancelAddForm = () => {
-        setIsAdding(false);
-    };
-
-    const handleSubmit = async () => {
-        //get all user experience by id
-        // const experiences = await api.get(`/experience/${userId}`)
-        // if (!experiences || experiences.length === 0){
-        //     //make post
-        //     api.post(`/experience/${userId}`, data)
-        // } else {
-        //     //make put
-        //     api.put(`/experience/${userId}`, data)
-        // }
-
-    }
+    const handleSubmit =  async() => {
+        try {
+          let userId = localStorage.get('userId')
+          let result = userId ? await api.get(`/experience/${userId}`) : null  
+          console.log(result)
+          if (result){
+            result = userId ? await api.put(`/experience/${userId}`, formDataArray) : null ;
+          } else {
+            result = userId ? await api.post(`/experience/${userId}`, formDataArray) : null ;
+            console.log(result)
+          }
+       } catch(error) {
+        console.log(error)
+       }
+      }
+    
 
     const handleAdd = () => {
         let formData = {

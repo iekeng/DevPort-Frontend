@@ -33,55 +33,62 @@ const MultiFields = ({ endpoint, name}) => {
   const handleSubmit = async () => {
     try {
       let response = await api.get(`${endpoint}/${userId}`);
-      let result = response.data;
+      let result = response.data[`${name}`];
       if(!result){
-        //post
-        // let data = result[`${name}`];
         await api.post(`${endpoint}/${userId}`, { name: formDataArray })
       } else {
         await api.put(`${endpoint}/${userId}`, {key: `${name}`, array: formDataArray})
       }
+      setFormDataArray(result);
     } catch (error) {
       console.log(error);
     }
   }
 
   useEffect(() => {
-    if (githubApi.isAuthenticated) {
-      endpoint === '/skills' && fetchSkillsFromGitHubRepos();
-    }
-  }, []);
-
-  const fetchSkillsFromGitHubRepos = async () => {
-    try {
-      const userReposResponse = await githubApi.get('/user/repos');
-
-
-      const userRepos = userReposResponse.data;
-      const uniqueLanguages = new Set();
-      const fetchPromises = [];
-
-      for (const repo of userRepos) {
-        const languagesUrl = repo.languages_url;
-        fetchPromises.push(await githubApi.get(languagesUrl))
-      }
-
-      // Fetch languages for all repositories in parallel
-      const repoLanguagesResponses = await Promise.all(fetchPromises);
-
-      for (const response of repoLanguagesResponses) {
-        if (response.status === 200) {
-          const repoLanguages = Object.keys(response.data);
-          repoLanguages.forEach((language) => uniqueLanguages.add(language));
+    const fetchSkillsFromGitHubRepos = async () => {
+      try {
+        const userReposResponse = await githubApi.get('/user/repos');
+        const userRepos = userReposResponse.data;
+        const uniqueLanguages = new Set();
+        const fetchPromises = [];
+    
+        for (const repo of userRepos) {
+          const languagesUrl = repo.languages_url;
+          fetchPromises.push(githubApi.get(languagesUrl));
         }
+    
+        const repoLanguagesResponses = await Promise.all(fetchPromises);
+    
+        for (const response of repoLanguagesResponses) {
+          if (response.status === 200) {
+            const repoLanguages = Object.keys(response.data);
+            repoLanguages.forEach((language) => uniqueLanguages.add(language));
+          }
+        } 
+        setFormDataArray(Array.from(uniqueLanguages));
+      } catch (error) {
+        console.error('Error fetching skills from GitHub repositories', error);
       }
-
-      // setSkills(Array.from(uniqueLanguages));
-      
-    } catch (error) {
-      console.error('Error fetching skills from GitHub repositories', error);
+    };
+    
+    const displayData = async() => {
+      let response = await api.get(`${endpoint}`);
+      if (response.data){
+        let data = response.data[`${name}`];
+        setFormDataArray(data);
+        return data;
+      }  else {
+        endpoint === '/skills' && name === 'technical_skills' ? await fetchSkillsFromGitHubRepos() : setFormDataArray([])
+      }
     }
-  };
+
+    if (githubApi.isAuthenticated) {
+      displayData();
+    }
+  }, [githubApi.isAuthenticated]);
+
+
   
   return (
     <>

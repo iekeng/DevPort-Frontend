@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import InputField from './InputField';
 import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import { FaPlusSquare as Plus } from 'react-icons/fa';
 import { useGithubApi } from '../contexts/GithubApiProvider';
 import { useApi } from '../contexts/DevPortApiProvider';
 
 
-const MultiFields = ({ endpoint, value}) => {
-  const devportApi = useApi();
+const MultiFields = ({ endpoint, name}) => {
+  const api = useApi();
   const githubApi = useGithubApi();
-  const [formDataArray, setFormDataArray] = useState([{fieldValue: ''}]);
+  const [formDataArray, setFormDataArray] = useState(['']);
   const userId = localStorage.getItem('userId');
   console.log(userId);
-  const apiKey = value;
 
   const handleAddField = () => {
-    setFormDataArray([...formDataArray, {fieldValue:''}])
+    setFormDataArray([...formDataArray, ''])
   }
 
   const handleRemoveField = () => {
@@ -28,23 +25,25 @@ const MultiFields = ({ endpoint, value}) => {
 
   const handleChange = (i, e) => {
     let newFormDataArray = [...formDataArray];
-    newFormDataArray[i][e.target.name] = e.target.value;
+    newFormDataArray[i] = e.target.value;
     setFormDataArray(newFormDataArray);
   }
   
 
   const handleSubmit = async () => {
     try {
-      const response = await devportApi.get(`${endpoint}/${userId}`);
-      if(!response){
-        await devportApi.post(`${endpoint}/${userId}`, {apiKey: [...formDataArray]})
+      let response = await api.get(`${endpoint}/${userId}`);
+      let result = response.data;
+      if(!result){
+        //post
+        // let data = result[`${name}`];
+        await api.post(`${endpoint}/${userId}`, { name: formDataArray })
       } else {
-        await devportApi.put(`${endpoint}/${userId}`, {apiKey: [...formDataArray]})
+        await api.put(`${endpoint}/${userId}`, {key: `${name}`, array: formDataArray})
       }
     } catch (error) {
       console.log(error);
     }
-    
   }
 
   useEffect(() => {
@@ -83,25 +82,6 @@ const MultiFields = ({ endpoint, value}) => {
       console.error('Error fetching skills from GitHub repositories', error);
     }
   };
-
-  // const saveLanguagesToDB = async () => {
-  //   try {
-  //     const userId = localStorage.getItem('userId');
-  //     const response = await axios.post(`http:localhost:4000/skill/${userId}`, {
-  //       skills: skills,
-  //     });
-  //     if (response.status === 201) {
-  //       console.log('Skills saved to DB');
-  //       onSave('WorkExperience');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error saving skills to DB', error);
-  //   }
-  // };
-
-  // const handleAddSection = () => {
-  //   setSectionNum(sectionNum + 1);
-  // };
   
   return (
     <>
@@ -109,7 +89,7 @@ const MultiFields = ({ endpoint, value}) => {
       <div className='d-flex flex-row flex-wrap justify-content-start'>
         {formDataArray.map((formData, index) => (
           <div className='mx-2' key={index}>
-            <InputField name={value} type="text" placeholder="..." value={formData.formValue} onChange={ e => handleChange(index, e)}/>
+            <InputField name={`${name}${index}`} type="text" placeholder="..." value={formData} onChange={e => handleChange(index, e)}/>
           </div>
         ))}
       </div>

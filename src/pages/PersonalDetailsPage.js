@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import axios from 'axios';
-import { NavLink } from 'react-bootstrap';
+import { NavLink, Spinner } from 'react-bootstrap';
 
 import { FaTwitter, FaLinkedin,  } from "react-icons/fa";
 import { useApi } from '../contexts/DevPortApiProvider';
@@ -17,101 +17,140 @@ import { useNavigate } from 'react-router-dom';
 const PersonalDetailsPage = () => {
   const api = useApi();
   const githubApi = useGithubApi();
-  // const nameRef = useRef();
-  // const emailRef = useRef();
-  // const phoneRef = useRef();
-  // const twitterRef = useRef();
-  // const linkedInRef = useRef();
-  // const summRef = useRef();
   const navigate = useNavigate();
+  const initialFormData = {
+    name: '',
+    email: '',
+    summary: '',
+    socials: {
+      twitter: '',
+      linkedIn: '',
+      github: '',
+    },
+    phone: '',
+    avatar_url: '',
+    location: '',
+    __v: 0,
+    _id: ''
+  }
+  const [formData, setFormData] = useState(initialFormData);
+  const [isLoading, setIsLoading] = useState(true);
 
-const [formData, setFormData] = useState({});
-const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    let response;
+    let result;
+    let data;
+    let temp;
 
-// const [isEditing, setIsEditing] = useState(false);
-
-useEffect(() => {
-  let response;
-  const fetchPersonalDetailsFromGitHub = async() => {
-    setIsLoading(true);
-    if (githubApi.isAuthenticated) {
-      try {
-        response = await githubApi.get('/user');
-        let data = response.data;
-        let temp = {
-          name: data.name,
-          email: data.email,
-          summary: data.bio || '',
-          socials: {
-            twitter: data.twitter_username || '',
-            linkedIn: data.blog || '',
-            github: data.html_url,
-          },
-          phone: data.phone || '',
-          avatar_url: data.avatar_url || '',
-          location: data.location || '',
-        }
-        setFormData(temp);
-      } catch (error) {
-        console.log(error)
-      } finally {
-        setIsLoading(false);
+    const createUser = async(data) => {
+      if(!isLoading){
+        response = await api.post('/users', data);
+        console.log(response)
+        const {_id} = response;
+        let userId = _id;
+        console.log(userId)
+        localStorage.setItem('userId', userId);
       }
     }
+
+    const validateUser = async(email) => {
+      result = await api.get('/users', `?email=${email}`);
+      localStorage.setItem('userId', result.data[0]._id)
+      return result.data[0];
+    }
+
+    const fetchPersonalDetailsFromGitHub = async() => {
+      setIsLoading(true);
+      if (githubApi.isAuthenticated) {
+        try {
+          const user = await githubApi.get('/user');
+          const userMail = user.email
+          response = await validateUser(userMail);
+          if (response) {
+            data = response;
+            temp = {
+              name: data.name,
+              email: data.email,
+              summary: data.bio,
+              socials: {
+                twitter: data.twitter_username,
+                linkedIn: data.blog,
+                github: data.html_url,
+              },
+              phone: data.phone,
+              avatar_url: data.avatar_url,
+              location: data.location
+            }
+            setFormData(temp);
+          } else {
+          
+          data = response.data;
+          temp = {
+            name: data.name,
+            email: data.email,
+            summary: data.bio || '',
+            socials: {
+              twitter: data.twitter_username || '',
+              linkedIn: data.blog || '',
+              github: data.html_url,
+            },
+            phone: data.phone || '',
+            avatar_url: data.avatar_url || '',
+            location: data.location || ''
+          }
+            await createUser(temp);
+            setFormData(temp);
+          }
+        } catch (error) {
+          console.log(error)
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    fetchPersonalDetailsFromGitHub();
+    
+  }, [githubApi]);
+
+  const handleSubmit =  async() => {
+    try {
+      let userId = localStorage.get('userId')
+      let result = userId ? await api.put(`/users/${userId}`, formData) : null  
+      console.log(result)
+    
+   } catch(error) {
+    console.log(error)
    }
-
-  // const fetch = async () => {
-  //   const userId = localStorage.getItem('userId')
-  //   const response = api.get(`/users/${userId}`)
-  //   setFormData(response.data)
-  // }
-  // save();
-  // // fetch();
-  fetchPersonalDetailsFromGitHub();
- }, [githubApi]);
-
-  const submit =  async() => {
-    const response = await api.post('/users', formData)
-    console.log(response)    
-    const userId = response.data._id.toString();
-    localStorage.setItem('userId', userId);
-    console.log(localStorage.getItem('userId'))
   }
 
   const handleChange = (e) => {
-    const {name, value} = e.target;
-    const newFormData = {...formData, [name]: value};
-    setFormData(newFormData);
-  }
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
-  const handleNext = (e) => {
+  const handleNext = () => {
     navigate('/ExperiencePage');
   }
-// const handleSavePersonalDetails = async (data) => {
-//   let response;
 
-//   try{
-//     response = await api.post('/users', data);
-//     console.log(response)
-   
-//     // setIsEditing(false);
-   
-//   } catch(error){
-//     console.error('Error updating personal details', error);
-//   }
-// };
-
-// const handleEditClick = () => {
-//     // setIsEditing(true);
-// };
-
-// const handleSaveClick = () => {
-//     handleSavePersonalDetails();
-// };
+  const testApi = async () => {
+    let user = localStorage.getItem('userId')
+    console.log(user)
+    console.log(formData)
+    if (user) {
+      const result = await api.put(`/users/${user}`, formData);
+      console.log(result);
+    }
+    
+  }
 
   return (
     <>
-      //Force email to lower case in the form
+    {!isLoading ?
+    <div>
       <div className='mb-5'>
       <h5>Details</h5>
       <Form className="border border-gray-600 p-4 mb-3">
@@ -125,24 +164,21 @@ useEffect(() => {
             <InputField name="phone" label="Phone" type="text" placeholder="Phone Number" value={formData.phone} onChange={e => handleChange(e)}/>
           </Col>
         </Row>
-        <Row>
+        <Row> 
           <Col>
-            <InputField name="twitter" label={<FaTwitter size={20}/>} placeholder={"X handle"} />
+            <InputField name="twitter" label={<FaTwitter size={20}/>} placeholder={"X handle"} value={formData.socials.twitter} onChange={e => handleChange(e)}/>
           </Col>
           <Col>
-            <InputField name="linkedin" label={<FaLinkedin size={20}/>} placeholder="LinkedIn URL" />
+            <InputField name="linkedin" label={<FaLinkedin size={20}/>} placeholder="LinkedIn URL" value={formData.socials.linkedIn} onChange={e => handleChange(e)}/>
           </Col>
         </Row>
       </Form>
       <h5>Soft Skills</h5>
-      <MultiFields name="soft" />
+      <MultiFields name="soft_skills" endpoint="/skill"/>
       <h5>Technical Skills</h5>
-      <MultiFields name="technical" />
-      {/* <Button as NavLink to='/ExperiencePage'  className="mb-4 mt-4 me-4" variant="primary">
-        Next
-      </Button> */}
+      <MultiFields name="technical_skills" endpoint="/skill" />
       <div className='d-flex mt-5 justify-content-around'>
-        <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={submit}>
+        <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={testApi}>
           Submit
         </Button>
         <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleNext}>
@@ -150,8 +186,12 @@ useEffect(() => {
       </Button>
       </div>
     </div>
-    </> 
-    );
+    </div> :
+    <div className='text-center mt-5'>
+      <Spinner />
+    </div> }
+    </>
+  );
 };
 
 export default PersonalDetailsPage;

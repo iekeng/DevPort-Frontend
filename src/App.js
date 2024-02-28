@@ -11,6 +11,7 @@ import GithubApiProvider from './contexts/GithubApiProvider';
 import Container from 'react-bootstrap/Container';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import MyForm from './components/MyForm';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/SignUp" element={<SignUp />} />
             <Route path="/ExperiencePage" element={<ExperiencePage/>} />
+            <Route path="/MyForm" element={<MyForm/>} />
             <Route path="/EducationPage" element={<EducationPage />} />
             <Route path="/PersonalDetailsPage" element={<PersonalDetailsPage />} />
             <Route path="/PortfolioPage" element={<PortfolioPage />} /> 

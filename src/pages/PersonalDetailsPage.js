@@ -47,16 +47,18 @@ const PersonalDetailsPage = () => {
         console.log(response)
         const {_id} = response;
         let userId = _id;
-        console.log(userId)
+        console.log(userId);
         localStorage.setItem('userId', userId);
     }
 
-    const validateUser = async(email) => {
+    const emailValidation = async(email) => {
       try {
-        result = await api.get('/user', `email=${email}`);
+        let result = await api.get('/user', `?email=${email}`);
+        console.log(result.data)
         if (result.statusText === 'OK'){
-          localStorage.setItem('userId', result.data[0]._id);
-          return result.data[0];
+          const userId = result.data._id
+          localStorage.setItem('userId', userId);
+          return result;
         }
         return result;
       } catch (error) {
@@ -71,9 +73,9 @@ const PersonalDetailsPage = () => {
           const user = await githubApi.get('/user');
           const userMail = user.data.email
           console.log(userMail)
-          response = await validateUser(userMail);
+          response = await emailValidation(userMail);
           if (response.statusText === 'OK') {
-            data = response;
+            data = response.data;
             console.log(response)
             temp = {
               name: data.name,
@@ -89,29 +91,30 @@ const PersonalDetailsPage = () => {
               location: data.location
             }
             setFormData(temp);
-          } else {
-          data = user.data;
-          temp = {
-            name: data.name,
-            email: data.email,
-            summary: data.bio || '',
-            socials: {
-              twitter: data.twitter_username || '',
-              linkedIn: data.blog || '',
-              github: data.html_url,
-            },
-            phone: data.phone || '',
-            avatar_url: data.avatar_url || '',
-            location: data.location || ''
-          }
-            console.log(temp)
-            await createUser(temp);
-            setFormData(temp);
+          } else if (response.statusText === 'BAD ERR') {
+            data = user.data;
+            const formData = {
+              name: data.name,
+              email: data.email,
+              summary: data.bio || '',
+              socials: {
+                twitter: data.twitter_username || '',
+                linkedIn: data.blog || '',
+                github: data.html_url,
+              },
+              phone: data.phone || '',
+              avatar_url: data.avatar_url || '',
+              location: data.location || ''
+            }
+            console.log(formData)
+            await createUser(formData);
+            setFormData(formData);
           }
         } catch (error) {
           console.log(error)
         } finally {
           setIsLoading(false);
+          console.log(localStorage.getItem('userId'))
         }
       }
     }
@@ -121,7 +124,7 @@ const PersonalDetailsPage = () => {
 
   const handleSubmit =  async() => {
     try {
-      let userId = localStorage.get('userId')
+      let userId = localStorage.getItem('userId')
       let result = userId ? await api.put(`/user/${userId}`, formData) : null  
       console.log(result)
     

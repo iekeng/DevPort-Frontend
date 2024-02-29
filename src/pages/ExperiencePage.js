@@ -25,10 +25,11 @@ const ExperiencePage = () => {
     useEffect(() => {
       const setup = async () => {
         const response = await api.get(`/experience/${userId}`);
-        console.log(response)
-      if (response.data){
-        setFormDataArray(response.data)
-      }
+        const data = response.data;
+        if (response.statusText === 'OK' && data.length > 0){
+          console.log(response.data)
+          setFormDataArray(response.data)
+        }
       }
 
       setup();

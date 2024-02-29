@@ -31,10 +31,12 @@ const MultiFields = ({ endpoint, name}) => {
   const handleSubmit = async () => {
     try {
       let response = await api.get(`${endpoint}/${userId}`);
-      if (response.data){
-        await api.put(`${endpoint}/${userId}`, { name: formDataArray })
+      console.log(response)
+      const data = {[`${name}`]: formDataArray}
+      if (response.statusText === 'OK' && response.data.length > 0){
+        await api.put(`${endpoint}/${userId}`, data)
       } else {
-        await api.post(`${endpoint}/${userId}`, { name: formDataArray })
+        await api.post(`${endpoint}/${userId}`, data)
       }
     } catch (error) {
       console.log(error);
@@ -72,12 +74,13 @@ const MultiFields = ({ endpoint, name}) => {
     
     const displayData = async() => {
       if (userId){
-        let url = `${endpoint}/${userId}`;
-        let response = await api.get(`${endpoint}/${userId}`);
-        if (response.length === 0) {
-          name === '/skills' && fetchSkillsFromGitHubRepos();
+        const response = await api.get(`${endpoint}/${userId}`);
+        const data = response.data;
+        if (data.length > 0) {
+          for(const item of data){
+            setFormDataArray(item[`${name}`]);
+          }
         }
-        
       }
       
       // if (response.data){

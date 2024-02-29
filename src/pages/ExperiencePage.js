@@ -18,16 +18,15 @@ const ExperiencePage = () => {
         position: '',
         startDate: '',
         endDate: '',
-        achievements: [], // Store achievements as an array
-        responsibilities: [],
-        user: userId,
+        achievements: [],
+        responsibilities: []
     }]);
     
     useEffect(() => {
       const setup = async () => {
         const response = await api.get(`/experience/${userId}`);
         console.log(response)
-      if (response){
+      if (response.data){
         setFormDataArray(response.data)
       }
       }
@@ -49,22 +48,25 @@ const ExperiencePage = () => {
         setFormDataArray(newFormDataArray);
       };
 
-    const handleSubmit =  async() => {
-        try {
-          let userId = localStorage.get('userId')
-          let result = userId ? await api.get(`/experience/${userId}`) : null  
-          console.log(result)
-          if (result){
-            result = userId ? await api.put(`/experience/${userId}`, formDataArray) : null ;
-          } else {
-            result = userId ? await api.post(`/experience/${userId}`, formDataArray) : null ;
-            console.log(result)
-          }
-       } catch(error) {
-        console.log(error)
-       }
-      }
-    
+    const handleSubmit = async() => {
+        try{
+            if (userId){
+                const response = await api.get(`/experience/${userId}`);
+                if (response.data) {
+                    for (const formData of formDataArray) {
+                        console.log(formData)
+                        if (formData._id){
+                            await api.put(`/experience/${userId}/${formData._id}`, formData)
+                        }
+                        await api.post(`/experience/${userId}`, formData)
+                    }
+                }   
+            }
+        } catch(error) {
+            console.log('Error submiting experiences.');
+            console.log('Error: ', error);
+        }
+    }
 
     const handleAdd = () => {
         let formData = {
@@ -73,41 +75,39 @@ const ExperiencePage = () => {
             startDate: '',
             endDate: '',
             achievements: [], 
-            responsibilities: [],
-            user: userId,
+            responsibilities: []
         }
         setFormDataArray([...formDataArray, formData])
-        console.log(formDataArray.length)
     }
 
     return (
         <>
         <div className='mb-5 bottom-border'>
-        <h5>Work Experience:</h5>
+        <h5>Work Experience</h5>
         {formDataArray.map((formData, index) => (
             <div key={index}>
                 <Form className="border border-gray-600 p-3 mb-3">
                         <Row>
                             <Col>
-                                <InputField name={`organisation-${index}`} label="Organisation" placeholder="Organisation" value={formData.organisation} onChange={e => handleInputChange(index, e)}/>
+                                <InputField name={`organisation`} label="Organisation" placeholder="Organisation" value={formData.organisation} onChange={e => handleInputChange(index, e)}/>
                             </Col>
                             <Col>
-                                <InputField name={`position-${index}`} label="Position" placeholder="Position" value={formData.position} onChange={e => handleInputChange(index, e)}/>
+                                <InputField name={`position`} label="Position" placeholder="Position" value={formData.position} onChange={e => handleInputChange(index, e)}/>
                             </Col>
                         </Row>
                         <Row>
                         <Col>
-                            <InputField name={`startDate-${index}`} type="date" label="Start Date" placeholder="Start Date" value={formData.startDate} onChange={e => handleInputChange(index, e)}/>
+                            <InputField name={`startDate`} type="date" label="Start Date" placeholder="Start Date" value={formData.startDate} onChange={e => handleInputChange(index, e)}/>
                         </Col>
                         <Col>
-                            <InputField name={`endDate-${index}`} type="date" label="End Date" placeholder="End Date" value={formData.endDate} onChange={e => handleInputChange(index, e)}/>
+                            <InputField name={`endDate`} type="date" label="End Date" placeholder="End Date" value={formData.endDate} onChange={e => handleInputChange(index, e)}/>
                         </Col>
                         </Row>
                         
                         <p className='mb-0 mt-2'>Achievements:</p>
-                        <MultiFields name="achievements" />
+                        <MultiFields name="achievements" endpoint="/experience"/>
                         <p className='mb-0 mt-2'>Responsibilities:</p>
-                        <MultiFields name="responsibility"/>
+                        <MultiFields name="responsibility" endpoint="/experience"/>
                 </Form>
             </div>
         ))

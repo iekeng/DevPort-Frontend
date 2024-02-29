@@ -43,20 +43,25 @@ const PersonalDetailsPage = () => {
     let temp;
 
     const createUser = async(data) => {
-      if(!isLoading){
-        response = await api.post('/users', data);
+        response = await api.post('/user', data);
         console.log(response)
         const {_id} = response;
         let userId = _id;
         console.log(userId)
         localStorage.setItem('userId', userId);
-      }
     }
 
     const validateUser = async(email) => {
-      result = await api.get('/users', `?email=${email}`);
-      localStorage.setItem('userId', result.data[0]._id)
-      return result.data[0];
+      try {
+        result = await api.get('/user', `email=${email}`);
+        if (result.statusText === 'OK'){
+          localStorage.setItem('userId', result.data[0]._id);
+          return result.data[0];
+        }
+        return result;
+      } catch (error) {
+        console.error(error)
+      }
     }
 
     const fetchPersonalDetailsFromGitHub = async() => {
@@ -64,10 +69,12 @@ const PersonalDetailsPage = () => {
       if (githubApi.isAuthenticated) {
         try {
           const user = await githubApi.get('/user');
-          const userMail = user.email
+          const userMail = user.data.email
+          console.log(userMail)
           response = await validateUser(userMail);
-          if (response) {
+          if (response.statusText === 'OK') {
             data = response;
+            console.log(response)
             temp = {
               name: data.name,
               email: data.email,
@@ -83,8 +90,7 @@ const PersonalDetailsPage = () => {
             }
             setFormData(temp);
           } else {
-          
-          data = response.data;
+          data = user.data;
           temp = {
             name: data.name,
             email: data.email,
@@ -98,6 +104,7 @@ const PersonalDetailsPage = () => {
             avatar_url: data.avatar_url || '',
             location: data.location || ''
           }
+            console.log(temp)
             await createUser(temp);
             setFormData(temp);
           }
@@ -110,13 +117,12 @@ const PersonalDetailsPage = () => {
     }
 
     fetchPersonalDetailsFromGitHub();
-    
   }, [githubApi]);
 
   const handleSubmit =  async() => {
     try {
       let userId = localStorage.get('userId')
-      let result = userId ? await api.put(`/users/${userId}`, formData) : null  
+      let result = userId ? await api.put(`/user/${userId}`, formData) : null  
       console.log(result)
     
    } catch(error) {
@@ -134,17 +140,6 @@ const PersonalDetailsPage = () => {
 
   const handleNext = () => {
     navigate('/ExperiencePage');
-  }
-
-  const testApi = async () => {
-    let user = localStorage.getItem('userId')
-    console.log(user)
-    console.log(formData)
-    if (user) {
-      const result = await api.put(`/users/${user}`, formData);
-      console.log(result);
-    }
-    
   }
 
   return (
@@ -173,12 +168,15 @@ const PersonalDetailsPage = () => {
           </Col>
         </Row>
       </Form>
-      <h5>Soft Skills</h5>
-      <MultiFields name="soft_skills" endpoint="/skill"/>
-      <h5>Technical Skills</h5>
-      <MultiFields name="technical_skills" endpoint="/skill" />
+      {!isLoading && localStorage.getItem('userId') ?
+      <>
+        <h5>Soft Skills</h5>
+        <MultiFields name="soft_skills" endpoint="/skill"/>
+        <h5>Technical Skills</h5>
+        <MultiFields name="technical_skills" endpoint="/skill" />
+      </> : <></> }
       <div className='d-flex mt-5 justify-content-around'>
-        <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={testApi}>
+        <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleSubmit}>
           Submit
         </Button>
         <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleNext}>

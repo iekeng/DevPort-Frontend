@@ -23,8 +23,7 @@ export default function EducationPage() {
     useEffect(() => {
         const setup = async () => {
           const response = await api.get(`/education/${userId}`);
-          console.log(response)
-        if (response){
+        if (response.data){
           setFormDataArray(response.data.education)
         }
         }

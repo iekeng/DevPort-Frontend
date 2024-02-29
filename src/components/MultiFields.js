@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import InputField from './InputField';
 import Button from 'react-bootstrap/Button';
-import { FaPlusSquare as Plus } from 'react-icons/fa';
 import { useGithubApi } from '../contexts/GithubApiProvider';
 import { useApi } from '../contexts/DevPortApiProvider';
 
@@ -11,7 +10,6 @@ const MultiFields = ({ endpoint, name}) => {
   const githubApi = useGithubApi();
   const [formDataArray, setFormDataArray] = useState(['']);
   const userId = localStorage.getItem('userId');
-  console.log(userId);
 
   const handleAddField = () => {
     setFormDataArray([...formDataArray, ''])
@@ -33,13 +31,11 @@ const MultiFields = ({ endpoint, name}) => {
   const handleSubmit = async () => {
     try {
       let response = await api.get(`${endpoint}/${userId}`);
-      let result = response.data[`${name}`];
-      if(!result){
-        await api.post(`${endpoint}/${userId}`, { name: formDataArray })
+      if (response.data){
+        await api.put(`${endpoint}/${userId}`, { name: formDataArray })
       } else {
-        await api.put(`${endpoint}/${userId}`, {key: `${name}`, array: formDataArray})
+        await api.post(`${endpoint}/${userId}`, { name: formDataArray })
       }
-      setFormDataArray(result);
     } catch (error) {
       console.log(error);
     }
@@ -48,9 +44,11 @@ const MultiFields = ({ endpoint, name}) => {
   useEffect(() => {
     const fetchSkillsFromGitHubRepos = async () => {
       try {
-        const userReposResponse = await githubApi.get('/user/repos');
+        const userReposResponse = githubApi.isAuthenticated ? await githubApi.get('/user/repos') : null;
+        console.log(userReposResponse)
         const userRepos = userReposResponse.data;
         const uniqueLanguages = new Set();
+        console.log(uniqueLanguages)
         const fetchPromises = [];
     
         for (const repo of userRepos) {
@@ -66,27 +64,35 @@ const MultiFields = ({ endpoint, name}) => {
             repoLanguages.forEach((language) => uniqueLanguages.add(language));
           }
         } 
-        setFormDataArray(Array.from(uniqueLanguages));
+        console.log(Array.from(uniqueLanguages));
       } catch (error) {
         console.error('Error fetching skills from GitHub repositories', error);
       }
     };
     
     const displayData = async() => {
-      let response = await api.get(`${endpoint}`);
-      if (response.data){
-        let data = response.data[`${name}`];
-        setFormDataArray(data);
-        return data;
-      }  else {
-        endpoint === '/skills' && name === 'technical_skills' ? await fetchSkillsFromGitHubRepos() : setFormDataArray([])
+      if (userId){
+        let url = `${endpoint}/${userId}`;
+        let response = await api.get(`${endpoint}/${userId}`);
+        if (response.length === 0) {
+          name === '/skills' && fetchSkillsFromGitHubRepos();
+        }
+        
       }
+      
+      // if (response.data){
+      //   let data = response.data[0][`${name}`];
+      //   console.log(data)
+        // setFormDataArray(data);
+      // }  else {
+      //  fetchSkillsFromGitHubRepos();
+      // }
     }
 
-    if (githubApi.isAuthenticated) {
+    if (githubApi.isAuthenticated ) {
       displayData();
     }
-  }, [githubApi.isAuthenticated]);
+  }, []);
 
 
   

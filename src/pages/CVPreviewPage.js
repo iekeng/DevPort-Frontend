@@ -33,7 +33,7 @@ function CVPreview() {
       <div>
         {pdfUrl && <iframe src={pdfUrl} width="100%" height="400px" />}
       </div>
-      <a href={`http://localhost:4000/generate-cv/${userId}`} className="mt-5" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <a href={`${process.env.REACT_APP_API_URL}/generate-cv/${userId}`} className="mt-5" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Button variant="dark" className='w-100 mt-5' disabled={userId ? false : true}>
             Download CV
           </Button>
@@ -42,4 +42,4 @@ function CVPreview() {
   );
 }
 
-export default CVPreview;
+export default CVPreview; 

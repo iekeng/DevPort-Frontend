@@ -53,11 +53,12 @@ const ExperiencePage = () => {
 
       const handleRemove = async (i) => {
         try {
-            const response = await api.get(`/education/${userId}`);
-            const result = response.data.education;
+            const response = await api.get(`/experience/${userId}`);
+            const result = response.data;
+            console.log(result);
             const id = result[i]._id;
             await axios.delete(`${apiURL}/experience/${id}`)
-        } catch (error) {
+        } catch (error) { 
             console.log('Error: ', error)
         }
         const newFormDataArray = [...formDataArray];
@@ -74,8 +75,9 @@ const ExperiencePage = () => {
                         console.log(formData)
                         if (formData._id){
                             await api.put(`/experience/${userId}/${formData._id}`, formData)
+                        } else {
+                          await api.post(`/experience/${userId}`, formData)
                         }
-                        await api.post(`/experience/${userId}`, formData)
                     }
                 }   
             }
@@ -102,8 +104,8 @@ const ExperiencePage = () => {
         <div className='mb-5 bottom-border'>
         <h5>Work Experience</h5>
         {formDataArray.map((formData, index) => (
-            <div key={index}>
-                <Form className="border border-gray-600 p-3 mb-3">
+            <div key={index} className="border border-gray-600 mb-3">
+                <Form className="p-3 mb-2">
                         <Row>
                             <Col>
                                 <InputField name={`organisation`} label="Organisation" placeholder="Organisation" value={formData.organisation} onChange={e => handleInputChange(index, e)}/>
@@ -126,7 +128,7 @@ const ExperiencePage = () => {
                         <p className='mb-0 mt-2'>Responsibilities:</p>
                         <MultiFields name="responsibility" endpoint="/experience"/> */}
                 </Form>
-                <Button className="mb-4 mt-4 me-4" variant="primary" onClick={() => handleRemove(index)} disabled={formDataArray.length === 1}>
+                <Button className="mb-4 ms-4" variant="primary" onClick={() => handleRemove(index)} disabled={formDataArray.length === 1}>
                  - Remove Section
                </Button>
             </div> 

@@ -83,7 +83,7 @@ export default function EducationPage() {
             const result = response.data.education;
             const id = result[i]._id;
             // await axios.delete(`http://localhost:4000/education/${id}`)
-            await axios.delete(`${apiURL}/experience/${id}`)
+            await axios.delete(`${process.env.REACT_APP_API_URL}/education/${id}`)
         } catch (error) {
             console.log('Error: ', error)
         }
@@ -101,7 +101,7 @@ export default function EducationPage() {
         <>
         <div className='mb-5'>
             <div className='fs2 pt-2'>
-                <h5>Education {process.env.REACT_APP_API_URL}</h5>
+                <h5>Education </h5>
             </div>
             {formDataArray.map((formData, index)=>(
             <div key={index}>

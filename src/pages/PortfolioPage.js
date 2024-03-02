@@ -40,7 +40,7 @@ const PortfolioPage = () => {
       const queryString = window.location.search;
       const response = await api.get('/oauth/callback', queryString);
       console.log(response)
-      if(response.statusText === "OK") {
+      if(response.data.token) {
         localStorage.setItem('accessToken', response.data.token);
         setIsAuthorized(true);
         githubApi.isAuthenticated ? console.log(localStorage.getItem('accessToken')) : console.log('nay');

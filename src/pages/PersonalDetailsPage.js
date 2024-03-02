@@ -74,7 +74,7 @@ const PersonalDetailsPage = () => {
           const userMail = user.data.email
           console.log(userMail)
           response = await emailValidation(userMail);
-          if (response.statusText === 'OK') {
+          if (response.data) {
             data = response.data;
             console.log(response)
             temp = {
@@ -91,7 +91,7 @@ const PersonalDetailsPage = () => {
               location: data.location
             }
             setFormData(temp);
-          } else if (response.statusText === 'BAD ERR') {
+          } else if (!response.data) {
             data = user.data;
             const formData = {
               name: data.name,

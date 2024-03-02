@@ -27,7 +27,7 @@ export default class DevPortApiClient{
     })
       return {
         data: response.data,
-        statusText: response.statusText,
+        statusText: "OK",
         code: response.code,
       }
     } catch (error) {    

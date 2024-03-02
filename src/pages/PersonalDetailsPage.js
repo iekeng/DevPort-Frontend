@@ -80,7 +80,7 @@ const PersonalDetailsPage = () => {
             temp = {
               name: data.name,
               email: data.email,
-              summary: data.bio,
+              summary: data.summary,
               socials: {
                 twitter: data.twitter_username,
                 linkedIn: data.blog,
@@ -127,7 +127,6 @@ const PersonalDetailsPage = () => {
       let userId = localStorage.getItem('userId')
       let result = userId ? await api.put(`/user/${userId}`, formData) : null  
       console.log(result)
-    
    } catch(error) {
     console.log(error)
    }
@@ -179,10 +178,10 @@ const PersonalDetailsPage = () => {
         <MultiFields name="technical_skills" endpoint="/skill" />
       </> : <></> }
       <div className='d-flex mt-5 justify-content-around'>
-        <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleSubmit}>
+        <Button   className=" mt-4 me-4 mb-5" variant="primary" onClick={handleSubmit}>
           Submit
         </Button>
-        <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleNext}>
+        <Button   className=" mt-4 me-4 mb-5" variant="primary" onClick={handleNext}>
           Next
       </Button>
       </div>

@@ -6,11 +6,14 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { useApi } from '../contexts/DevPortApiProvider';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function EducationPage() {
     const api = useApi();
+    const apiURL = process.env.REACT_APP_API_URL;
     const userId = localStorage.getItem('userId');
+    const navigate = useNavigate();
 
     const [formDataArray, setFormDataArray] = useState([{
         institution: '',
@@ -78,8 +81,9 @@ export default function EducationPage() {
         try {
             const response = await api.get(`/education/${userId}`);
             const result = response.data.education;
-            const id = result[i]._id
-            await axios.delete(`http://localhost:4000/education/${id}`)
+            const id = result[i]._id;
+            // await axios.delete(`http://localhost:4000/education/${id}`)
+            await axios.delete(`${apiURL}/experience/${id}`)
         } catch (error) {
             console.log('Error: ', error)
         }
@@ -90,13 +94,14 @@ export default function EducationPage() {
       
     const handleNext = async () => {
         //todo
+        navigate('/CVPreviewPage')
     }
 
     return (
         <>
         <div className='mb-5'>
             <div className='fs2 pt-2'>
-                <h5>Education</h5>
+                <h5>Education {process.env.REACT_APP_API_URL}</h5>
             </div>
             {formDataArray.map((formData, index)=>(
             <div key={index}>
@@ -130,10 +135,10 @@ export default function EducationPage() {
             </Button>
             
             <div className='d-flex mt-5 justify-content-around'>
-                <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleSubmit}>
+                <Button   className="mt-2 me-4 mb-5" variant="primary" onClick={handleSubmit}>
                     Submit
                 </Button>
-                <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleNext}>
+                <Button   className="mt-2 me-4 mb-5" variant="primary" onClick={handleNext}>
                     Next
                 </Button>
             </div>

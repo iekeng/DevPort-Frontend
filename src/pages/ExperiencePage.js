@@ -7,10 +7,12 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button'
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../contexts/DevPortApiProvider';
+import axios from 'axios';
 
 const ExperiencePage = () => {
     const userId = localStorage.getItem('userId');
     const navigate = useNavigate();
+    const apiURL = process.env.REACT_APP_API_URL;
     const api = useApi();
   
     const [formDataArray, setFormDataArray] = useState([{
@@ -46,6 +48,20 @@ const ExperiencePage = () => {
           ...newFormDataArray[index],
           [name]: value,
         };
+        setFormDataArray(newFormDataArray);
+      };
+
+      const handleRemove = async (i) => {
+        try {
+            const response = await api.get(`/education/${userId}`);
+            const result = response.data.education;
+            const id = result[i]._id;
+            await axios.delete(`${apiURL}/experience/${id}`)
+        } catch (error) {
+            console.log('Error: ', error)
+        }
+        const newFormDataArray = [...formDataArray];
+        newFormDataArray.splice(i, 1);
         setFormDataArray(newFormDataArray);
       };
 
@@ -105,12 +121,15 @@ const ExperiencePage = () => {
                         </Col>
                         </Row>
                         
-                        <p className='mb-0 mt-2'>Achievements:</p>
+                        {/* <p className='mb-0 mt-2'>Achievements:</p>
                         <MultiFields name="achievements" endpoint="/experience"/>
                         <p className='mb-0 mt-2'>Responsibilities:</p>
-                        <MultiFields name="responsibility" endpoint="/experience"/>
+                        <MultiFields name="responsibility" endpoint="/experience"/> */}
                 </Form>
-            </div>
+                <Button className="mb-4 mt-4 me-4" variant="primary" onClick={() => handleRemove(index)} disabled={formDataArray.length === 1}>
+                 - Remove Section
+               </Button>
+            </div> 
         ))
         }
           <Button className="mb-4 mt-4 me-4" variant="primary" onClick={handleAdd}>
@@ -118,10 +137,10 @@ const ExperiencePage = () => {
           </Button>
         
         <div className='d-flex mt-5 justify-content-around'>
-          <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleSubmit}>
+          <Button   className="me-4 mb-5" variant="primary" onClick={handleSubmit}>
             Submit
           </Button>
-          <Button   className="mb-4 mt-4 me-4 mb-5" variant="primary" onClick={handleNext}>
+          <Button   className="me-4 mb-5" variant="primary" onClick={handleNext}>
             Next
         </Button>
       </div>

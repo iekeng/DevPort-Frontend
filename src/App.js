@@ -12,6 +12,7 @@ import Container from 'react-bootstrap/Container';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import MyForm from './components/MyForm';
+import CVPreview from './pages/CVPreviewPage';
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/SignUp" element={<SignUp />} />
             <Route path="/ExperiencePage" element={<ExperiencePage/>} />
-            <Route path="/MyForm" element={<MyForm/>} />
+            <Route path="/CVPreviewPage" element={<CVPreview/>} />
             <Route path="/EducationPage" element={<EducationPage />} />
             <Route path="/PersonalDetailsPage" element={<PersonalDetailsPage />} />
             <Route path="/PortfolioPage" element={<PortfolioPage />} /> 

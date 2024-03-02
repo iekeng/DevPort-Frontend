@@ -1,10 +1,10 @@
 import axios from "axios";
-
 export default class DevPortApiClient{
   
+ ; 
   constructor(){
     // this.onError = onError;
-    this.base_url = "http://localhost:4000";
+    this.base_url = process.env.REACT_APP_API_URL;
   }
 
   async request(options) {
@@ -54,4 +54,30 @@ export default class DevPortApiClient{
   async del(url, body, query, options){
     return this.request({method:'DELETE', url, query, ...options })
   }
+
+  async downloadFile(apiEndpoint, filename) {
+    try {
+      const response = await axios.get(apiEndpoint, {
+        responseType: "blob", // Specify response type as blob
+      });
+
+      const blob = new Blob([response.data], { type: response.headers["content-type"] });
+
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+
+      // Append the link to the document body
+      document.body.appendChild(link);
+
+      // Trigger a click on the link to start the download
+      link.click();
+
+      // Remove the link from the document
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
+  }
+
 }

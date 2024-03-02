@@ -15,7 +15,7 @@ return (
   <>
   <Container>
     <div className='mt-5 flex-grow'>
-      <a href=`${process.env.REACT_APP_API_URL}/oauth` className="mt-5" style={{ textDecoration: 'none', color: 'inherit' }}>
+      <a href={`${process.env.REACT_APP_API_URL}/oauth`} className="mt-5" style={{ textDecoration: 'none', color: 'inherit' }}>
         <Button variant="dark" className='w-100 mt-5'>
           <FaGithub size={25} /> 
         </Button>

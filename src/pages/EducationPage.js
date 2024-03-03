@@ -82,7 +82,6 @@ export default function EducationPage() {
             const response = await api.get(`/education/${userId}`);
             const result = response.data.education;
             const id = result[i]._id;
-            // await axios.delete(`http://localhost:4000/education/${id}`)
             await axios.delete(`${process.env.REACT_APP_API_URL}/education/${id}`)
         } catch (error) {
             console.log('Error: ', error)

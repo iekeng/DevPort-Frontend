@@ -45,7 +45,7 @@ const PortfolioPage = () => {
         setIsAuthorized(true);
         githubApi.isAuthenticated ? console.log(localStorage.getItem('accessToken')) : console.log('nay');
       } else {
-        // return navigate('/SignUp')
+        return navigate('/SignUp')
       }
     })();
 

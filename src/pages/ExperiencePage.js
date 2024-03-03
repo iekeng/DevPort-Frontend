@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
-import MultiFields from '../components/MultiFields';
+// import MultiFields from '../components/MultiFields';
 import InputField from '../components/InputField';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -35,7 +35,7 @@ const ExperiencePage = () => {
       }
 
       setup();
-    }, [])
+    }, [api, userId])
 
     const handleNext = () => {
       navigate('/EducationPage');

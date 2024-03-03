@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect} from 'react';
 import InputField from '../components/InputField';
 import MultiFields from '../components/MultiFields';
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import ProgressBar from 'react-bootstrap/ProgressBar';
-import axios from 'axios';
-import { NavLink, Spinner } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 
 import { FaTwitter, FaLinkedin,  } from "react-icons/fa";
 import { useApi } from '../contexts/DevPortApiProvider';
@@ -38,7 +36,6 @@ const PersonalDetailsPage = () => {
 
   useEffect(() => {
     let response;
-    let result;
     let data;
     let temp;
 
@@ -72,7 +69,7 @@ const PersonalDetailsPage = () => {
         try {
           const user = await githubApi.get('/user');
           const userMail = user.data.email
-          console.log(userMail)
+          console.log(user)
           response = await emailValidation(userMail);
           if (response.statusText === 'OK') {
             data = response.data;
@@ -120,7 +117,7 @@ const PersonalDetailsPage = () => {
     }
 
     fetchPersonalDetailsFromGitHub();
-  }, [githubApi]);
+  }, [githubApi, api]);
 
   const handleSubmit =  async() => {
     try {

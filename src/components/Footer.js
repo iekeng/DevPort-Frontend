@@ -3,7 +3,6 @@ import { FaGithub, FaGoogle, FaLinkedin } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 
 const Footer = ({ fixed }) => {
-  const footerClass = fixed ? 'fixed-bottom' : 'mt-auto';
 
   return (
     <footer className={`bg-body-tertiary text-center fixed-bottom`}>

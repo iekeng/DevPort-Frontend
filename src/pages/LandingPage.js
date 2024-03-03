@@ -1,19 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { FaGithub } from "react-icons/fa";
-import { FaGoogle } from "react-icons/fa";
-import { FaDigitalOcean } from "react-icons/fa";
-import { FaNode } from "react-icons/fa";
-import Footer from '../components/Footer'
-import Header from '../components/Header'
 import Button from 'react-bootstrap/Button'
-// import SignUp from './SignUp';
-import Stack from 'react-bootstrap/Stack';
+
 
 const LandingPage = () => {
   

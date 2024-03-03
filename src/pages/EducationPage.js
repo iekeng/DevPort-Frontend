@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 
 export default function EducationPage() {
     const api = useApi();
-    const apiURL = process.env.REACT_APP_API_URL;
     const userId = localStorage.getItem('userId');
     const navigate = useNavigate();
 
@@ -33,7 +32,7 @@ export default function EducationPage() {
         }
   
         setup();
-      }, [])
+      }, [api, userId])
 
     const handleInputChange = (i, e) => {
         const { name, value } = e.target;

@@ -11,7 +11,6 @@ import GithubApiProvider from './contexts/GithubApiProvider';
 import Container from 'react-bootstrap/Container';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import MyForm from './components/MyForm';
 import CVPreview from './pages/CVPreviewPage';
 
 function App() {

@@ -1,11 +1,11 @@
 import GithubApiClient from '../apiClients/GithubApiClient';
-import { useContext, createContext, useCallback } from 'react';
+import { useContext, createContext } from 'react';
 
 const githubContext = createContext();
 
 export default function GithubApiProvider({children}) {
 
-  const githubApi = useCallback(new GithubApiClient());
+  const githubApi = new GithubApiClient();
 
   return (
     <githubContext.Provider value={githubApi}>

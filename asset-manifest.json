@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/DevPort-Frontend/static/css/main.9808aff0.css",
+    "main.js": "/DevPort-Frontend/static/js/main.cdede77b.js",
+    "index.html": "/DevPort-Frontend/index.html",
+    "main.9808aff0.css.map": "/DevPort-Frontend/static/css/main.9808aff0.css.map",
+    "main.cdede77b.js.map": "/DevPort-Frontend/static/js/main.cdede77b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9808aff0.css",
+    "static/js/main.cdede77b.js"
+  ]
+}

@@ -1,6 +1,5 @@
 {
   "name": "devport-app",
-  "homepage": "https://iekeng.github.io/DevPort-Frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
